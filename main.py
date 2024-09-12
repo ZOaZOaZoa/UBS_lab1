@@ -16,13 +16,16 @@ def main():
 
     form.cInput.clicked.connect(cTable.toNumpy)
     form.tInput.clicked.connect(tTable.toNumpy)
-
     form.test.clicked.connect(lambda: print(cTable.matrix, tTable.matrix, sep='\n\n'))
+
+    cTable.table.itemChanged.connect(TableReader.floatValidateAndMessage)
+    tTable.table.itemChanged.connect(TableReader.floatValidateAndMessage)
 
     window.show()
     app.exec()
     
-
+def test(*args):
+    print(args)
 
 if __name__ == '__main__':
     main()

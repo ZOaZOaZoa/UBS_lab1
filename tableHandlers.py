@@ -11,8 +11,8 @@ class TableReader:
     }
 
     def __init__(self, table: QTableWidget):
-        self.table = table
-        self.matrix = None
+        self.table: QTableWidget = table
+        self.matrix: np.ndarray = None
 
     @staticmethod
     def floatValidate(item: QTableWidgetItem):
