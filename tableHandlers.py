@@ -3,8 +3,8 @@ from userInfo import TemplateMessageBox
 import numpy as np
 
 class TableHandler:
-    valueErrorTitle = 'Введены неверные данные!'
-    valueErrorMessages = {
+    valueErrorTitle: str = 'Введены неверные данные!'
+    valueErrorMessages: dict = {
         'empty_cell': TemplateMessageBox(valueErrorTitle, 'Заполните все ячейки матрицы.', QMessageBox.Icon.Warning),
         'non_float': TemplateMessageBox(valueErrorTitle, 'Все значения должны быть числовыми.', QMessageBox.Icon.Warning),
         'negative_value': TemplateMessageBox(valueErrorTitle, 'Значение не может быть отрицательным.', QMessageBox.Icon.Warning)
