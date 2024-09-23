@@ -2,6 +2,7 @@ from PyQt6 import uic
 from PyQt6.QtWidgets import QApplication
 from PyQt6.QtCore import QRegularExpression
 from PyQt6.QtGui import QRegularExpressionValidator
+from userInfo import dataGetter
 import numpy as np
 
 cMatrixDefault = np.array([
@@ -38,10 +39,9 @@ def main():
 
     matrixOptimizer = MatrixOptimizer(cTable, tTable, max_T_default)
 
-    form.matrixInput.clicked.connect(lambda: (
-        cTable.toNumpy(),
-        tTable.toNumpy()
-    ))
+    data_getter = dataGetter({"Матрица С": cTable, "Матрица Т": tTable}, {"Значение Тз": form.T_max_lEdit})
+
+    form.matrixInput.clicked.connect(lambda: data_getter.catched_input_errors())
     form.optimize1.clicked.connect(lambda: (
         matrixOptimizer.optimization1(),
         print(matrixOptimizer.eliminated)
@@ -54,6 +54,7 @@ def main():
 
     validator = QRegularExpressionValidator(QRegularExpression(r'[0-9]+\.[0-9]*'))
     form.T_max_lEdit.setValidator(validator)
+    
 
 
     window.show()

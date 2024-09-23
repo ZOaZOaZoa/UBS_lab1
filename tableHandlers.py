@@ -15,10 +15,12 @@ class TableHandler:
         self.rows = self.table.rowCount()
         self.columns = self.table.columnCount()
         self.matrix: np.ndarray = defaultValues
+        self.data_good = True
 
         if self.matrix is None:
+            self.data_good = False
             return
-        
+
         if (self.rows, self.columns) != self.matrix.shape:
             raise ValueError("Table shape does not match passed defaultValues: np.array shape")
         
@@ -67,6 +69,7 @@ class TableHandler:
                 status, value = TableHandler.floatValidateAndMessage(item)
                 if status == 'err':
                     self.table.setCurrentCell(i, j)
+                    self.data_good = False
                     return None
                     
                 row += [value,]
@@ -74,6 +77,7 @@ class TableHandler:
         
         np_matrix = np.array(matrix, dtype=np.float16)
         self.matrix = np_matrix
+        self.data_good = True
         return np_matrix
 
     def toTable(self, matrix: np.array):
