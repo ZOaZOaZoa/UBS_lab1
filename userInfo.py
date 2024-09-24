@@ -14,8 +14,8 @@ class TemplateMessageBox(QMessageBox):
         self.setInformativeText(description)
         self.setIcon(icon)
 
-class dataGetter:
-    def __init__(self, tables: dict, lineEdits: dict):
+class DataGetter:
+    def __init__(self, tables: dict, lineEdits: dict, lineEditsLinkedTables: dict = {}):
         '''
         tables -> dict(str: TableHandler)
         lineEdits -> dict(str: QLineEdit)
@@ -24,8 +24,13 @@ class dataGetter:
         self.lineEdits = lineEdits
         self.data_good = False
         self.lineEditsTexts = dict()
+        self.lineEditsLinkedTables = lineEditsLinkedTables
+        self.inputBtnMode = 'input'
 
     def _get_and_check(self):
+        '''
+        Считывает данные из полей для ввода и выполняет проверки на корректность введённых данных
+        '''
         for name, table in self.tables.items():
             table.toNumpy()
             if not table.data_good:
@@ -37,9 +42,20 @@ class dataGetter:
                 raise ValueError(f"{name}. Должно быть введено значение")
             self.lineEditsTexts[name] = text
             
-    def catched_input_errors(self):
+            
+            if name not in self.lineEditsLinkedTables:
+                return
+            
+            table_name = self.lineEditsLinkedTables[name]
+            theorMin = self.tables[table_name].theorMin
+            if float(text) < theorMin:
+                raise ValueError(f"{name}. Значение не может быть меньше теоретического минимума равного {theorMin}")
+            
+    def catch_input_errors(self) -> bool:
         try:
             self._get_and_check()
+            msg = TemplateMessageBox("Данные успешно введены", "", QMessageBox.Icon.Information)
+            msg.exec()
             return False
         except ValueError as e:
             msg = TemplateMessageBox("Неверно введённые данные", str(e), QMessageBox.Icon.Warning)

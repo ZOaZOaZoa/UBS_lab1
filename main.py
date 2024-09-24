@@ -1,8 +1,8 @@
 from PyQt6 import uic
-from PyQt6.QtWidgets import QApplication
+from PyQt6.QtWidgets import QApplication, QPushButton, QLabel
 from PyQt6.QtCore import QRegularExpression
 from PyQt6.QtGui import QRegularExpressionValidator
-from userInfo import dataGetter
+from userInfo import DataGetter
 import numpy as np
 
 cMatrixDefault = np.array([
@@ -21,6 +21,37 @@ tMatrixDefault = np.array([
 ], dtype=np.float16)
 max_T_default = 25
 
+def InputBtnClick(dataGetter: DataGetter, matrixOptimizer, inputBtn: QPushButton, instructionLabel: QLabel):
+    modes = {
+        'input': 'Ввод данных',
+        'reset': 'Ввести новые данные'
+    }
+    instructionTexts = {
+        'input': 'Введите данные',
+        'reset': 'Выберите действие'
+    }
+
+    if dataGetter.inputBtnMode == 'input':
+        gotError: bool = dataGetter.catch_input_errors()
+        if not gotError:
+            [ tableHandler.table.setEnabled(False) for tableHandler in dataGetter.tables.values()]
+            [ lineEdit.setEnabled(False) for lineEdit in dataGetter.lineEdits.values()]
+            inputBtn.setText(modes['reset'])
+            dataGetter.inputBtnMode = 'reset'
+            instructionLabel.setText(instructionTexts['reset'])
+            matrixOptimizer.max_T = float(dataGetter.lineEditsTexts['Значение Тз'])
+        return
+    
+    if dataGetter.inputBtnMode == 'reset':
+        [ tableHandler.table.setEnabled(True) for tableHandler in dataGetter.tables.values()]
+        [ lineEdit.setEnabled(True) for lineEdit in dataGetter.lineEdits.values()]
+        inputBtn.setText(modes['input'])
+        dataGetter.inputBtnMode = 'input'
+        instructionLabel.setText(instructionTexts['input'])
+        return
+
+        
+
 def main():
     Form, Window = uic.loadUiType("main_window.ui")
     app = QApplication([])
@@ -29,24 +60,24 @@ def main():
     form.setupUi(window)
     
     from tableHandlers import TableHandler
-
     cTable = TableHandler(form.cMatrix, cMatrixDefault)
     tTable = TableHandler(form.tMatrix, tMatrixDefault)
     cTable.table.itemChanged.connect(TableHandler.floatValidateAndMessage)
     tTable.table.itemChanged.connect(TableHandler.floatValidateAndMessage)
 
     from optimizer import MatrixOptimizer
-
     matrixOptimizer = MatrixOptimizer(cTable, tTable, max_T_default)
+    dataGetter = DataGetter(tables={"Матрица C": cTable, "Матрица T": tTable}, lineEdits={"Значение Тз": form.T_max_lEdit}, 
+                            lineEditsLinkedTables={"Значение Тз": 'Матрица T'})
 
-    data_getter = dataGetter({"Матрица С": cTable, "Матрица Т": tTable}, {"Значение Тз": form.T_max_lEdit})
-
-    form.matrixInput.clicked.connect(lambda: data_getter.catched_input_errors())
+    form.dataInput.clicked.connect(lambda: (
+        InputBtnClick(dataGetter, matrixOptimizer, form.dataInput, form.instructionLabel),
+        matrixOptimizer.refreshValues()
+    ))
     form.optimize1.clicked.connect(lambda: (
         matrixOptimizer.optimization1(),
         print(matrixOptimizer.eliminated)
     ))
-    #form.optimize2.clicked.connect(matrixOptimizer.optimization2)
     form.optimize2.clicked.connect(lambda: (
         matrixOptimizer.optimization2(),
         print(matrixOptimizer.eliminated)

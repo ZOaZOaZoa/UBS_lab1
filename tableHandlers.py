@@ -16,6 +16,7 @@ class TableHandler:
         self.columns = self.table.columnCount()
         self.matrix: np.ndarray = defaultValues
         self.data_good = True
+        self.theorMin = None
 
         if self.matrix is None:
             self.data_good = False
@@ -56,6 +57,12 @@ class TableHandler:
         
         return ('good', value)
 
+    def _calcTheorMin(self):
+        '''
+        Расчёт теоретического суммарного минимума для набора из единичных значений из каждой строки 
+        '''
+        self.theorMin = sum(self.matrix.min(1))
+
     def toNumpy(self):
         '''
         Запись значений из таблицы QTableWidget в матрицу np.array
@@ -78,6 +85,7 @@ class TableHandler:
         np_matrix = np.array(matrix, dtype=np.float16)
         self.matrix = np_matrix
         self.data_good = True
+        self._calcTheorMin()
         return np_matrix
 
     def toTable(self, matrix: np.array):

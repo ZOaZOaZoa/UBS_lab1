@@ -12,6 +12,12 @@ class MatrixOptimizer:
         self.rows, self.columns = self.cMatrix.shape
         self.eliminated = np.zeros((self.rows, self.columns), dtype=bool)
 
+    def refreshValues(self):
+        self.cMatrix = self.cTable.matrix
+        self.tMatrix = self.tTable.matrix
+        self.rows, self.columns = self.cMatrix.shape
+        self.eliminated = np.zeros((self.rows, self.columns), dtype=bool)   
+
     def optimization1(self):
         c_argmin = self.cMatrix.argmin(1)
         eliminated = []
@@ -19,7 +25,7 @@ class MatrixOptimizer:
             t_min = self.tMatrix[i,c_argmin[i]]
             c_min = self.cMatrix[i,c_argmin[i]]
             eliminated.append([ self.tMatrix[i,j] > t_min or (self.tMatrix[i,j] == t_min and self.cMatrix[i,j] > c_min) for j in range(self.columns) ])
-            
+
         self.eliminated = np.logical_or(self.eliminated, np.array(eliminated, dtype=bool))
         return self.eliminated
     
