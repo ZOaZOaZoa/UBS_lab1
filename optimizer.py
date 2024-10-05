@@ -38,3 +38,5 @@ class MatrixOptimizer:
 
         self.eliminated = np.logical_or(self.eliminated, np.array(eliminated, dtype=bool))
         return self.eliminated
+
+    

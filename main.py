@@ -44,13 +44,12 @@ def InputBtnClick(dataGetter: DataGetter, matrixOptimizer, inputBtn: QPushButton
     
     if dataGetter.inputBtnMode == 'reset':
         [ tableHandler.table.setEnabled(True) for tableHandler in dataGetter.tables.values()]
+        [ tableHandler.decolorize_cells() for tableHandler in dataGetter.tables.values()]
         [ lineEdit.setEnabled(True) for lineEdit in dataGetter.lineEdits.values()]
         inputBtn.setText(modes['input'])
         dataGetter.inputBtnMode = 'input'
         instructionLabel.setText(instructionTexts['input'])
-        return
-
-        
+        return        
 
 def main():
     Form, Window = uic.loadUiType("main_window.ui")
@@ -76,17 +75,19 @@ def main():
     ))
     form.optimize1.clicked.connect(lambda: (
         matrixOptimizer.optimization1(),
+        matrixOptimizer.cTable.colorize_cells(matrixOptimizer.eliminated),
+        matrixOptimizer.tTable.colorize_cells(matrixOptimizer.eliminated),
         print(matrixOptimizer.eliminated)
     ))
     form.optimize2.clicked.connect(lambda: (
         matrixOptimizer.optimization2(),
+        matrixOptimizer.cTable.colorize_cells(matrixOptimizer.eliminated),
+        matrixOptimizer.tTable.colorize_cells(matrixOptimizer.eliminated),
         print(matrixOptimizer.eliminated)
     ))
 
     validator = QRegularExpressionValidator(QRegularExpression(r'[0-9]+\.[0-9]*'))
     form.T_max_lEdit.setValidator(validator)
-    
-
 
     window.show()
     app.exec()

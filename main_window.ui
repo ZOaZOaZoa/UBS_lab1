@@ -271,6 +271,9 @@
              <height>0</height>
             </size>
            </property>
+           <property name="autoFillBackground">
+            <bool>false</bool>
+           </property>
            <property name="lineWidth">
             <number>1</number>
            </property>

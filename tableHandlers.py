@@ -1,4 +1,5 @@
 from PyQt6.QtWidgets import QTableWidget, QTableWidgetItem, QMessageBox
+from PyQt6.QtGui import QColor
 from userInfo import TemplateMessageBox
 import numpy as np
 
@@ -99,3 +100,17 @@ class TableHandler:
             for j in range(self.columns):
                 value = QTableWidgetItem(str(matrix[i,j]))
                 self.table.setItem(i, j, value)
+    
+    def colorize_cells(self, mask: np.array):
+        if (self.table.rowCount(), self.table.columnCount()) != mask.shape:
+            raise ValueError("Table shape does not match pased np.array shape")
+
+        for i in range(self.table.rowCount()):
+            for j in range(self.table.columnCount()):
+                if mask[i,j] == True:
+                    self.table.item(i, j).setBackground(QColor(200,0,0))
+
+    def decolorize_cells(self):
+        for i in range(self.table.rowCount()):
+            for j in range(self.table.columnCount()):
+                self.table.item(i, j).setBackground(QColor(255,255,255))
