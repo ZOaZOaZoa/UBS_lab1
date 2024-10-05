@@ -87,9 +87,11 @@ def main():
         matrixOptimizer.tTable.colorize_cells(matrixOptimizer.eliminated),
         print(matrixOptimizer.eliminated)
     ))
+    form.decisionTreeBtn.clicked.connect(lambda: matrixOptimizer.tree_optimization())
 
     validator = QRegularExpressionValidator(QRegularExpression(r'[0-9]+\.[0-9]*'))
     form.T_max_lEdit.setValidator(validator)
+    form.T_max_lEdit.setText(str(max_T_default))
     
     def showSVG(event):
         svgRenderer = QSvgRenderer('test.svg')
