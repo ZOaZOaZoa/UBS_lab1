@@ -1,7 +1,8 @@
 from PyQt6 import uic
 from PyQt6.QtWidgets import QApplication, QPushButton, QLabel
 from PyQt6.QtCore import QRegularExpression
-from PyQt6.QtGui import QRegularExpressionValidator
+from PyQt6.QtSvg import QSvgRenderer
+from PyQt6.QtGui import QRegularExpressionValidator, QPainter
 from userInfo import DataGetter
 import numpy as np
 
@@ -51,6 +52,7 @@ def InputBtnClick(dataGetter: DataGetter, matrixOptimizer, inputBtn: QPushButton
         instructionLabel.setText(instructionTexts['input'])
         return        
 
+
 def main():
     Form, Window = uic.loadUiType("main_window.ui")
     app = QApplication([])
@@ -88,7 +90,13 @@ def main():
 
     validator = QRegularExpressionValidator(QRegularExpression(r'[0-9]+\.[0-9]*'))
     form.T_max_lEdit.setValidator(validator)
-
+    
+    def showSVG(event):
+        svgRenderer = QSvgRenderer('test.svg')
+        painter = QPainter(form.svgView)
+        svgRenderer.render(painter)
+    form.svgView.paintEvent = showSVG
+    
     window.show()
     app.exec()
 
