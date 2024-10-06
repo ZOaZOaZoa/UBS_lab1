@@ -54,6 +54,8 @@
 	
 	Решать задачу мы будем в несколько этапов. Сначала над матрицами затрат будут проведены две процедуры оптимизации, которые исключат заведомо неоптимальные узлы для использования.
 	
+	Качественно алгоритмы также представлены в приложении.
+	
 	\subsection{Первая оптимизация}
 	
 	Оптимизация проводится построчно, пусть алгоритм находится на $i$-ой строке. Фиксируется номер узла $s$, на котором стоимость затрат наименьшая: 
@@ -89,6 +91,7 @@
 		\end{bmatrix*}
 		\label{matrices0}
 	\end{equation}
+	
 	
 	\subsection{Вторая оптимизация}
 	
@@ -211,5 +214,185 @@
 	
 	Программа написана на языке python 3.11.3. Использованы следующие библиотеки:  \textit{numpy=2.1.1, PyQt6=6.7.1, PyQt6-Qt6=6.7.3, PyQt6\_sip=13.8.0}.
 	
+	\subsection{Описание модулей программы}
+	
+	Программа состоит из 5 основных файлов. Опишем их основные назначения: 
+	\begin{itemize}
+		\item \textit{main.py} -- основной модуль. Именно он запускает программу. В нём объявляются основные объекты классов из других модулей и привязываются функции для взаимодействия с интерфейсом программы
+		\item \textit{tableHandlers.py} -- модуль, который содержит класс для работы с таблицами в интерфейсе. Он реализует такие основные функции, как чтение таблицы, установление стандартных значений в неё, проверка корректности введённых данных и перекрашивание ячеек в соответствии с заданной маской.
+		\item \textit{userInfo.py} -- отдельный модуль, который сделан специально для считывания данных из таблицы с уведомлением пользователя об ошибках в введенных данных. 
+		\item \textit{optimizer.py} -- в этом модуле реализуется два класса решающих задачу оптимизации. \textbf{MatrixOptimizer} -- класс, который занимается процедурами первой, второй оптимизации и метода ветвления. \textbf{Tree} -- класс, который реализует граф в виде дерева.
+		\item \textit{main\_window.ui} -- файл с основной разметкой пользовательского интерфейса, сгенерированный в Qt Designer.
+	\end{itemize}
+
+	Листинги этих файлов приведены в приложении.
+	
+	\subsection{Пример работы программы}
+	
+	При запуске программы открывается следующее окно: рис. \ref{prog1}.
+	\begin{figure}
+		\centering\includegraphics[width=.7\textwidth]{png/prog1.png}
+		\caption{Окно при запуске программы}
+		\label{prog1}
+	\end{figure}
+
+	Здесь в интерактивных таблицах можно ввести исходные данные. При введении некорректных исходных данных показывает окно с предупреждением о неверности введённых данных, рис. \ref{prog2}. При проверке введенных данных выполняется несколько проверок, среди них:
+	\begin{itemize}
+		\item Неотрицательность данных;
+		\item Введенные значения являются числами;
+		\item Введенные данные не пустые;
+		\item Введенное значение $T_\text{з}$ больше чем теоретический минимум $T_\text{теор. мин}$.
+	\end{itemize}
+	
+	\begin{figure}
+		\centering\includegraphics[width=.4\textwidth]{png/prog2.png}
+		\caption{Предупреждение о неверно введенных данных}
+		\label{prog2}
+	\end{figure}
+	
+	После нажатия кнопки ввод данных исходные значения фиксируются и становятся недоступными для редактирования, рис. \ref{prog3}. Становятся доступными кнопки первой и второй оптимизации и построения дерева решений.
+	
+	\begin{figure}
+		\centering\includegraphics[width=.5\textwidth]{png/prog3.png}
+		\caption{После нажатия кнопки ввод данных}
+		\label{prog3}
+	\end{figure}
+
+	При проведении любой из оптимизаций значения, которые были исключены в результате выполнения алгоритма окрашиваются в красный цвет, рис. \ref{optimize_prog}.
+	
+	{\noindent\begin{minipage}{.5\textwidth}
+		\includegraphics[width=\textwidth]{png/prog4.png}
+		\centering{а)}
+	\end{minipage}	
+	\begin{minipage}{.5\textwidth}
+		\includegraphics[width=\textwidth]{png/prog5.png}
+		\centering{б)}
+	\end{minipage} 
+	\captionof{figure}{Результаты проведения а) первой, б) второй после первой оптимизаций}
+	\label{optimize_prog}}
+
+	Все три операции в нижней части окна можно производить в произвольном порядке. Оптимизации лишь упрощают дальнейшее построение дерева и не зависят друг от друга, поэтому могут даже и не использоваться. 
+	
+	При нажатии кнопки построения дерева решений происходит последний этап оптимизации и в нишней части окна выводится получившееся дерево, рис.~\ref{tree_screenshot}. 
+	
+	\begin{figure}
+		\centering\includegraphics[width=.8\textwidth]{png/tree.png}
+		\caption{Построенное дерево решений}
+		\label{tree_screenshot}
+	\end{figure}
+
+	В приложении выводится сформированное \textit{svg}-изображение. Оно также сохраняется в папке с исходными файлами программы в файле \textit{out.svg}. На изображении вершины дерева упорядочены в соответствии с номером узла, который каждая из них представляют. Собрав последовательность узлов, которые не закрашены серым мы получаем ответ, на задачу оптимизации, данный в результате выполнения алгоритма. 
+	
+	В данном случае это последовательность узлов $3-3-1-1-4$.
+	
+	Если необходимо провести исследование при других исходных данных, то пользователь может нажать кнопку \textit{ввести новые данные} и вернуться к этапу, когда он только открыл программу. Построенное изображение дерева останется на экране, и будет обновлено, если пользователь построит новое дерево, в том числе при других исходных данных.
+	\newpage 
+	\appendix
+	\titleformat{\section}{\normalfont\large\bfseries}{\centering Приложение \thesection. }{0pt}{\large\centering}
+	\renewcommand{\thesection}{\Asbuk{section}}
+	\section{Блок-схемы алгоритмов}
+	
+	\tikzstyle{arrow} = [thick,->,>=stealth]
+	\begin{center}
+		\begin{tikzpicture}
+			\node (start)[startstop] {Начало};
+			\node (iforstart)[startfor, below=1.5cm] at (start) {Цикл $i=1\dots I$} ;
+			\node (proc) [process, below=1.5cm] at (iforstart) {$s = \mathrm{arg} \min_{j} c_{ij}$};
+			\node (jforstart)[startfor, below=1.5cm] at (proc) {Цикл $j=1\dots J$} ;
+			\node (decision) [decision, below=1.5cm] at (jforstart) {$\begin{aligned}
+					& c_{ij} > c_{is} \\
+					& t_{ij} > t_{is}
+				\end{aligned}$};
+			\node (elim) [process, right=3cm] at (decision) {Вычеркнуть $v_{ij}$};
+			\node (jforend) [endfor, below=3.5cm] at (decision) {$j++$};
+			\node (iforend) [endfor, below=1.5cm] at (jforend) {$i++$};
+			\node (end) [startstop, below=1.5cm] at (iforend) {Конец};
+			
+			\draw [arrow] (start) -- (iforstart);
+			\draw [arrow] (iforstart) -- (proc);
+			\draw [arrow] (proc) -- (jforstart);
+			\draw [arrow] (jforstart) -- (decision);
+			\draw [arrow] (decision) -- node[anchor=south] {Да}  (elim);
+			\draw [arrow] (decision) -- node(noArr)[anchor=east] {Нет} (jforend) ;
+			\draw [arrow] (elim) |- (noArr);
+			\draw [arrow] (jforend) -- (iforend);
+			\draw [arrow] (iforend) -- (end);
+			
+		\end{tikzpicture}
+	\end{center}
+	\captionof{figure}{Первая оптимизация}
+	
+	\begin{center}
+		\begin{tikzpicture}
+			\node (start)[startstop] {Начало};
+			\node (proc) [process, below=1.5cm] at (start) {$T_\text{min i} = \min_j T$};
+			\node (iforstart)[startfor, below=1.5cm] at (proc) {Цикл $i=1\dots I$} ;
+			\node (jforstart)[startfor, below=1.5cm] at (iforstart) {Цикл $j=1\dots J$} ;
+			\node (proc2) [process, below=1.5cm] at (jforstart) {$T_{cur} = sum(T_{\min\,i}) - T_{\min\,i} + t_{ij}$};
+			\node (decision) [decision, below=1.5cm] at (proc2) {$T_{cur} > T_\text{з}$};
+			\node (elim) [process, right=3cm] at (decision) {Вычеркнуть $v_{ij}$};
+			\node (jforend) [endfor, below=3.5cm] at (decision) {$j++$};
+			\node (iforend) [endfor, below=1.5cm] at (jforend) {$i++$};
+			\node (end) [startstop, below=1.5cm] at (iforend) {Конец};
+			
+			\draw [arrow] (start) -- (proc);
+			\draw [arrow] (proc) -- (iforstart);
+			\draw [arrow] (iforstart) -- (jforstart);
+			\draw [arrow] (jforstart) -- (proc2);
+			\draw [arrow] (proc2) -- (decision);
+			\draw [arrow] (decision) -- node[anchor=south] {Да}  (elim);
+			\draw [arrow] (decision) -- node(noArr)[anchor=east] {Нет} (jforend) ;
+			\draw [arrow] (elim) |- (noArr);
+			\draw [arrow] (jforend) -- (iforend);
+			\draw [arrow] (iforend) -- (end);
+			
+		\end{tikzpicture}
+	\end{center}
+	\captionof{figure}{Вторая оптимизация}
+	
+	\begin{center}
+		\begin{tikzpicture}
+			\node (start)[startstop] {Начало};
+			\node (lforstart)[startfor, below=1.5cm] at (start) {Цикл $l=1\dots I$} ;
+			\node (jforstart)[startfor, below=1.5cm] at (lforstart) {Цикл $j=1\dots J$} ;
+			\node (proc2) [process, below=1.5cm] at (jforstart) {Расчёт метрик $v^l_j$\\ $\norm{C_{\text{метр j}}}_{1},\;\norm{T_{\text{метр}\,j}}_{1}$};
+			\node (jforend) [endfor, below=1.5cm] at (proc2) {$j++$};
+			\node (proc3) [process, below=1.5cm] at (jforend) {Выбор $v^l_{j_{l}}$ не превышающего $T_\text{p}$ с наименьшим $c_{lj_{l}}$ };
+			\node (lforend) [endfor, below=1.5cm] at (proc3) {$l++$};
+			\node (end) [startstop, below=1.5cm] at (lforend) {Конец};
+			
+			\draw [arrow] (start) -- (lforstart);
+			\draw [arrow] (lforstart) -- (jforstart);
+			\draw [arrow] (jforstart) -- (proc2);
+			\draw [arrow] (proc2) -- (jforend);
+			\draw [arrow] (jforend) -- (proc3);
+			\draw [arrow] (proc3) -- (lforend);
+			\draw [arrow] (lforend) -- (end);
+			
+		\end{tikzpicture}
+	\end{center}
+	\captionof{figure}{Метод ветвления}
+	
+	\section{Листинги файлов программы}
+
+	\captionof{lstlisting}{main.py}
+	\label{main.py}
+	\inputminted[frame=lines,fontsize=\footnotesize,breaklines=true,numbers=left]{python}{../main.py}	
+	
+	\captionof{lstlisting}{userInfo.py}
+	\label{userInfo.py}
+	\inputminted[frame=lines,fontsize=\footnotesize,breaklines=true,numbers=left]{python}{../userInfo.py}	
+
+	\captionof{lstlisting}{tableHandlers.py}
+	\label{tableHandlers.py}
+	\inputminted[frame=lines,fontsize=\footnotesize,breaklines=true,numbers=left]{python}{../tableHandlers.py}	
+
+	\captionof{lstlisting}{optimizer.py}
+	\label{optimizer.py}
+	\inputminted[frame=lines,fontsize=\footnotesize,breaklines=true,numbers=left]{python}{../optimizer.py}	
+
+	\captionof{lstlisting}{main\_window.ui}
+	\label{main_window.ui}
+	\inputminted[frame=lines,fontsize=\footnotesize,breaklines=true,numbers=left]{xml}{../main_window.ui}
 	
 \end{document}

@@ -1,0 +1,212 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from} \PYG{n+nn}{PyQt6.QtWidgets} \PYG{k+kn}{import} \PYG{n}{QMessageBox}
+\PYG{k+kn}{from} \PYG{n+nn}{tableHandlers} \PYG{k+kn}{import} \PYG{n}{TableHandler}
+\PYG{k+kn}{import} \PYG{n+nn}{numpy} \PYG{k}{as} \PYG{n+nn}{np}
+
+\PYG{k}{class} \PYG{n+nc}{Tree}\PYG{p}{:}
+    \PYG{k}{def} \PYG{n+nf+fm}{\PYGZus{}\PYGZus{}init\PYGZus{}\PYGZus{}}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{,} \PYG{n}{parent}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}Tree\PYGZsq{}} \PYG{o}{=} \PYG{k+kc}{None}\PYG{p}{,} \PYG{n}{fixed\PYGZus{}nodes}\PYG{p}{:} \PYG{n+nb}{list} \PYG{o}{=} \PYG{p}{[]):}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{parent}\PYG{p}{:} \PYG{n}{Tree} \PYG{o}{=} \PYG{n}{parent}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{children} \PYG{o}{=} \PYG{n+nb}{dict}\PYG{p}{()}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{fixed\PYGZus{}nodes} \PYG{o}{=} \PYG{n}{fixed\PYGZus{}nodes}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{status\PYGZus{}good} \PYG{o}{=} \PYG{k+kc}{True}
+
+    \PYG{k}{def} \PYG{n+nf}{add\PYGZus{}child}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{,} \PYG{n}{fixed\PYGZus{}nodes}\PYG{p}{,} \PYG{n}{c\PYGZus{}sum}\PYG{p}{,} \PYG{n}{t\PYGZus{}sum}\PYG{p}{)} \PYG{o}{\PYGZhy{}\PYGZgt{}} \PYG{l+s+s1}{\PYGZsq{}Tree\PYGZsq{}}\PYG{p}{:}
+        \PYG{n}{parent\PYGZus{}node} \PYG{o}{=} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{find\PYGZus{}child}\PYG{p}{(}\PYG{n}{fixed\PYGZus{}nodes}\PYG{p}{[:}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{])}
+        \PYG{n}{child\PYGZus{}node} \PYG{o}{=} \PYG{n}{Tree}\PYG{p}{(}\PYG{n}{parent\PYGZus{}node}\PYG{p}{,} \PYG{n}{fixed\PYGZus{}nodes}\PYG{o}{.}\PYG{n}{copy}\PYG{p}{())}
+        \PYG{n}{child\PYGZus{}node}\PYG{o}{.}\PYG{n}{set\PYGZus{}metrics}\PYG{p}{(}\PYG{n}{c\PYGZus{}sum}\PYG{p}{,} \PYG{n}{t\PYGZus{}sum}\PYG{p}{)}
+        \PYG{n}{last\PYGZus{}node} \PYG{o}{=} \PYG{n}{fixed\PYGZus{}nodes}\PYG{p}{[}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{]}
+        \PYG{n}{parent\PYGZus{}node}\PYG{o}{.}\PYG{n}{children}\PYG{p}{[}\PYG{n}{last\PYGZus{}node}\PYG{p}{]} \PYG{o}{=} \PYG{n}{child\PYGZus{}node}
+
+        \PYG{k}{return} \PYG{n}{child\PYGZus{}node}
+    
+    \PYG{k}{def} \PYG{n+nf}{find\PYGZus{}child}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{,} \PYG{n}{fixed\PYGZus{}nodes}\PYG{p}{)} \PYG{o}{\PYGZhy{}\PYGZgt{}} \PYG{l+s+s1}{\PYGZsq{}Tree\PYGZsq{}}\PYG{p}{:}
+        \PYG{k}{if} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{fixed\PYGZus{}nodes} \PYG{o}{==} \PYG{n}{fixed\PYGZus{}nodes}\PYG{p}{:}
+            \PYG{k}{return} \PYG{n+nb+bp}{self}
+        
+        \PYG{n}{next\PYGZus{}node} \PYG{o}{=} \PYG{n}{fixed\PYGZus{}nodes}\PYG{p}{[}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{fixed\PYGZus{}nodes}\PYG{p}{)]}
+        \PYG{n}{res} \PYG{o}{=} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{children}\PYG{p}{[}\PYG{n}{next\PYGZus{}node}\PYG{p}{]}\PYG{o}{.}\PYG{n}{find\PYGZus{}child}\PYG{p}{(}\PYG{n}{fixed\PYGZus{}nodes}\PYG{p}{)}
+        \PYG{k}{return} \PYG{n}{res}
+
+    \PYG{k}{def} \PYG{n+nf}{set\PYGZus{}metrics}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{,} \PYG{n}{c\PYGZus{}sum}\PYG{p}{,} \PYG{n}{t\PYGZus{}sum}\PYG{p}{):}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{c\PYGZus{}sum} \PYG{o}{=} \PYG{n}{c\PYGZus{}sum}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{t\PYGZus{}sum} \PYG{o}{=} \PYG{n}{t\PYGZus{}sum}
+
+    \PYG{k}{def} \PYG{n+nf}{set\PYGZus{}status}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{,} \PYG{n}{status\PYGZus{}good}\PYG{p}{:} \PYG{n+nb}{bool}\PYG{p}{):}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{status\PYGZus{}good} \PYG{o}{=} \PYG{n}{status\PYGZus{}good}
+
+    \PYG{k}{def} \PYG{n+nf}{print\PYGZus{}node}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{):}
+        \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+si}{\PYGZob{}}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{c\PYGZus{}sum}\PYG{l+s+si}{:}\PYG{l+s+s1}{5\PYGZgt{}}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{|}\PYG{l+s+si}{\PYGZob{}}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{t\PYGZus{}sum}\PYG{l+s+si}{:}\PYG{l+s+s1}{5\PYGZgt{}}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{ good:}\PYG{l+s+si}{\PYGZob{}}\PYG{n+nb}{repr}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{status\PYGZus{}good}\PYG{p}{)}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+
+    \PYG{k}{def} \PYG{n+nf}{print\PYGZus{}tree}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{,} \PYG{n}{level} \PYG{o}{=} \PYG{l+m+mi}{1}\PYG{p}{):}
+        \PYG{k}{if} \PYG{n}{level} \PYG{o}{==} \PYG{l+m+mi}{1}\PYG{p}{:}
+            \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{print\PYGZus{}node}\PYG{p}{()}
+        \PYG{k}{for} \PYG{n}{node}\PYG{p}{,} \PYG{n}{child} \PYG{o+ow}{in} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{children}\PYG{o}{.}\PYG{n}{items}\PYG{p}{():}
+            \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}| \PYGZsq{}}\PYG{o}{*}\PYG{n}{level} \PYG{o}{+} \PYG{l+s+sa}{f}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{node}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{o}{+} \PYG{l+s+s1}{\PYGZsq{}\PYGZhy{}\PYGZhy{}\PYGZgt{}\PYGZsq{}}\PYG{p}{,} \PYG{n}{end}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}\PYGZsq{}}\PYG{p}{)}
+            \PYG{n}{child}\PYG{o}{.}\PYG{n}{print\PYGZus{}node}\PYG{p}{()}
+            \PYG{n}{child}\PYG{o}{.}\PYG{n}{print\PYGZus{}tree}\PYG{p}{(}\PYG{n}{level}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{)}
+    
+    \PYG{k}{def} \PYG{n+nf}{\PYGZus{}calc\PYGZus{}x\PYGZus{}for\PYGZus{}node}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{,} \PYG{n}{x\PYGZus{}place}\PYG{p}{):}
+        \PYG{n}{x\PYGZus{}offset} \PYG{o}{=} \PYG{p}{(}\PYG{n}{x\PYGZus{}place} \PYG{o}{\PYGZhy{}} \PYG{l+m+mf}{1.5}\PYG{p}{)} \PYG{o}{*} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{nodes\PYGZus{}x\PYGZus{}step}
+        \PYG{n}{x\PYGZus{}offset} \PYG{o}{+} \PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{image\PYGZus{}width}\PYG{o}{\PYGZhy{}}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{node\PYGZus{}width}\PYG{p}{)}\PYG{o}{/}\PYG{l+m+mi}{2}
+        \PYG{n}{x} \PYG{o}{=} \PYG{n}{x\PYGZus{}offset} \PYG{o}{+} \PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{image\PYGZus{}width}\PYG{o}{\PYGZhy{}}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{node\PYGZus{}width}\PYG{p}{)}\PYG{o}{/}\PYG{l+m+mi}{2}
+        \PYG{k}{return} \PYG{n}{x}
+    
+    \PYG{k}{def} \PYG{n+nf}{\PYGZus{}calc\PYGZus{}x\PYGZus{}for\PYGZus{}text}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{,} \PYG{n}{x\PYGZus{}place}\PYG{p}{):}
+        \PYG{n}{x\PYGZus{}offset} \PYG{o}{=} \PYG{p}{(}\PYG{n}{x\PYGZus{}place} \PYG{o}{\PYGZhy{}} \PYG{l+m+mf}{1.5}\PYG{p}{)} \PYG{o}{*} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{nodes\PYGZus{}x\PYGZus{}step}
+        \PYG{n}{x} \PYG{o}{=} \PYG{n}{x\PYGZus{}offset} \PYG{o}{+} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{image\PYGZus{}width}\PYG{o}{/}\PYG{l+m+mi}{2}
+        \PYG{k}{return} \PYG{n}{x}
+
+    \PYG{k}{def} \PYG{n+nf}{nodeSvg}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{,} \PYG{n}{node}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}Tree\PYGZsq{}}\PYG{p}{,} \PYG{n}{x\PYGZus{}place}\PYG{o}{=}\PYG{l+m+mf}{1.5}\PYG{p}{,} \PYG{n}{level}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{):}
+        \PYG{k}{if} \PYG{n}{node}\PYG{o}{.}\PYG{n}{status\PYGZus{}good}\PYG{p}{:}
+            \PYG{n}{color} \PYG{o}{=} \PYG{l+s+s1}{\PYGZsq{}white\PYGZsq{}}
+        \PYG{k}{else}\PYG{p}{:}
+            \PYG{n}{color} \PYG{o}{=} \PYG{l+s+s1}{\PYGZsq{}gray\PYGZsq{}}
+        \PYG{n}{y\PYGZus{}baseline} \PYG{o}{=} \PYG{n}{level} \PYG{o}{*} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{level\PYGZus{}step}
+        
+        \PYG{n}{svg} \PYG{o}{=} \PYG{l+s+sa}{f}\PYG{l+s+s1}{\PYGZsq{}\PYGZsq{}\PYGZsq{}\PYGZlt{}rect x=\PYGZsq{}}\PYG{l+s+si}{\PYGZob{}}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{\PYGZus{}calc\PYGZus{}x\PYGZus{}for\PYGZus{}node}\PYG{p}{(}\PYG{n}{x\PYGZus{}place}\PYG{p}{)}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZsq{} y=\PYGZsq{}}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{y\PYGZus{}baseline}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZsq{} width=\PYGZsq{}}\PYG{l+s+si}{\PYGZob{}}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{node\PYGZus{}width}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZsq{} height = \PYGZsq{}}\PYG{l+s+si}{\PYGZob{}}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{node\PYGZus{}height}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZsq{} stroke=\PYGZsq{}black\PYGZsq{} fill=\PYGZsq{}}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{color}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZsq{}/\PYGZgt{}}
+\PYG{l+s+s1}{\PYGZlt{}text x=\PYGZsq{}}\PYG{l+s+si}{\PYGZob{}}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{\PYGZus{}calc\PYGZus{}x\PYGZus{}for\PYGZus{}text}\PYG{p}{(}\PYG{n}{x\PYGZus{}place}\PYG{p}{)}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZsq{} y=\PYGZsq{}}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{y\PYGZus{}baseline}\PYG{+w}{ }\PYG{o}{+}\PYG{+w}{ }\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{node\PYGZus{}height}\PYG{o}{/}\PYG{l+m+mi}{2}\PYG{o}{+}\PYG{l+m+mi}{3}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZsq{} dominant\PYGZhy{}baseline=\PYGZsq{}middle\PYGZsq{} text\PYGZhy{}anchor=\PYGZsq{}middle\PYGZsq{} font\PYGZhy{}size=\PYGZsq{}}\PYG{l+s+si}{\PYGZob{}}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{f\PYGZus{}size}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZsq{}\PYGZgt{}}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{node}\PYG{o}{.}\PYG{n}{c\PYGZus{}sum}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{|}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{node}\PYG{o}{.}\PYG{n}{t\PYGZus{}sum}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZlt{}/text\PYGZgt{}}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s+s1}{\PYGZsq{}\PYGZsq{}\PYGZsq{}}
+        \PYG{k}{return} \PYG{n}{svg}
+
+    \PYG{k}{def} \PYG{n+nf}{nodesLevelSvg}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{,} \PYG{n}{children}\PYG{p}{,} \PYG{n}{level}\PYG{p}{):}
+        \PYG{n}{y\PYGZus{}baseline} \PYG{o}{=} \PYG{n}{level} \PYG{o}{*} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{level\PYGZus{}step}
+        \PYG{n}{svg} \PYG{o}{=} \PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}\PYGZlt{}text x=\PYGZsq{}0\PYGZsq{} y=\PYGZsq{}}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{y\PYGZus{}baseline}\PYG{+w}{ }\PYG{o}{+}\PYG{+w}{ }\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{node\PYGZus{}height}\PYG{o}{/}\PYG{l+m+mi}{2}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZsq{} font\PYGZhy{}size=\PYGZsq{}}\PYG{l+s+si}{\PYGZob{}}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{f\PYGZus{}size}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZsq{}\PYGZgt{}}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{level}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{ уровень\PYGZlt{}/text\PYGZgt{}}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s+s2}{\PYGZdq{}}
+        \PYG{k}{for} \PYG{n}{j}\PYG{p}{,} \PYG{n}{node} \PYG{o+ow}{in} \PYG{n}{children}\PYG{o}{.}\PYG{n}{items}\PYG{p}{():}
+            \PYG{n}{svg} \PYG{o}{+=} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{nodeSvg}\PYG{p}{(}\PYG{n}{node}\PYG{p}{,} \PYG{n}{j}\PYG{p}{,} \PYG{n}{level}\PYG{p}{)}
+        \PYG{k}{return} \PYG{n}{svg}
+        
+
+    \PYG{k}{def} \PYG{n+nf}{toSvg}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{,} \PYG{n}{file\PYGZus{}name}\PYG{p}{:} \PYG{n+nb}{str} \PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}out.svg\PYGZsq{}}\PYG{p}{):}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{image\PYGZus{}width} \PYG{o}{=} \PYG{l+m+mi}{800}\PYG{o}{*}\PYG{l+m+mf}{1.13}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{image\PYGZus{}height} \PYG{o}{=} \PYG{l+m+mi}{250}\PYG{o}{*}\PYG{l+m+mf}{1.13}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{node\PYGZus{}width} \PYG{o}{=} \PYG{l+m+mi}{50}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{node\PYGZus{}height} \PYG{o}{=} \PYG{l+m+mi}{30}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{f\PYGZus{}size} \PYG{o}{=} \PYG{l+s+s1}{\PYGZsq{}12px\PYGZsq{}}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{level\PYGZus{}step} \PYG{o}{=} \PYG{l+m+mi}{50}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{nodes\PYGZus{}x\PYGZus{}step} \PYG{o}{=} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{node\PYGZus{}width} \PYG{o}{+} \PYG{l+m+mi}{30}
+
+        \PYG{n}{svg} \PYG{o}{=} \PYG{l+s+sa}{f}\PYG{l+s+s1}{\PYGZsq{}\PYGZsq{}\PYGZsq{}\PYGZlt{}?xml version = \PYGZsq{}1.0\PYGZsq{} encoding=\PYGZsq{}UTF\PYGZhy{}8\PYGZsq{}?\PYGZgt{}}
+\PYG{l+s+s1}{\PYGZlt{}svg width=\PYGZsq{}}\PYG{l+s+si}{\PYGZob{}}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{image\PYGZus{}width}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZsq{} height=\PYGZsq{}}\PYG{l+s+si}{\PYGZob{}}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{image\PYGZus{}height}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZsq{} viewbox=\PYGZsq{}0 0 }\PYG{l+s+si}{\PYGZob{}}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{image\PYGZus{}width}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{ }\PYG{l+s+si}{\PYGZob{}}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{image\PYGZus{}height}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZsq{} xmlns=\PYGZsq{}http://www.w3.org/2000/svg\PYGZsq{}\PYGZgt{}}
+\PYG{l+s+s1}{\PYGZlt{}text x=\PYGZsq{}0\PYGZsq{} y=\PYGZsq{}}\PYG{l+s+si}{\PYGZob{}}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{node\PYGZus{}height}\PYG{o}{/}\PYG{l+m+mi}{2}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZsq{} font\PYGZhy{}size=\PYGZsq{}}\PYG{l+s+si}{\PYGZob{}}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{f\PYGZus{}size}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZsq{}\PYGZgt{}0 уровень\PYGZlt{}/text\PYGZgt{}}
+\PYG{l+s+s1}{        \PYGZsq{}\PYGZsq{}\PYGZsq{}}
+        \PYG{n}{svg} \PYG{o}{+=} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{nodeSvg}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{)}
+        \PYG{n}{valid\PYGZus{}node} \PYG{o}{=} \PYG{n+nb+bp}{self}
+        \PYG{n}{level} \PYG{o}{=} \PYG{l+m+mi}{1}
+        \PYG{k}{while} \PYG{n}{valid\PYGZus{}node}\PYG{o}{.}\PYG{n}{children}\PYG{p}{:}
+            \PYG{n}{svg} \PYG{o}{+=} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{nodesLevelSvg}\PYG{p}{(}\PYG{n}{valid\PYGZus{}node}\PYG{o}{.}\PYG{n}{children}\PYG{p}{,} \PYG{n}{level}\PYG{p}{)}
+            \PYG{n}{level} \PYG{o}{+=} \PYG{l+m+mi}{1}
+            \PYG{n}{y\PYGZus{}baseline} \PYG{o}{=} \PYG{p}{(}\PYG{n}{level}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{)} \PYG{o}{*} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{level\PYGZus{}step}
+            \PYG{n}{parent\PYGZus{}y} \PYG{o}{=} \PYG{n}{y\PYGZus{}baseline} \PYG{o}{\PYGZhy{}} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{level\PYGZus{}step} \PYG{o}{+} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{node\PYGZus{}height}
+            \PYG{k}{if} \PYG{n}{valid\PYGZus{}node}\PYG{o}{.}\PYG{n}{fixed\PYGZus{}nodes}\PYG{p}{:}
+                \PYG{n}{parent\PYGZus{}x} \PYG{o}{=} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{\PYGZus{}calc\PYGZus{}x\PYGZus{}for\PYGZus{}text}\PYG{p}{(}\PYG{n}{valid\PYGZus{}node}\PYG{o}{.}\PYG{n}{fixed\PYGZus{}nodes}\PYG{p}{[}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{])}
+            \PYG{k}{else}\PYG{p}{:}
+                \PYG{n}{parent\PYGZus{}x} \PYG{o}{=} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{\PYGZus{}calc\PYGZus{}x\PYGZus{}for\PYGZus{}text}\PYG{p}{(}\PYG{l+m+mf}{1.5}\PYG{p}{)}
+
+            \PYG{k}{for} \PYG{n}{node} \PYG{o+ow}{in} \PYG{n}{valid\PYGZus{}node}\PYG{o}{.}\PYG{n}{children}\PYG{o}{.}\PYG{n}{values}\PYG{p}{():}
+                \PYG{n}{child\PYGZus{}y} \PYG{o}{=} \PYG{n}{y\PYGZus{}baseline}
+                \PYG{n}{child\PYGZus{}x} \PYG{o}{=} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{\PYGZus{}calc\PYGZus{}x\PYGZus{}for\PYGZus{}text}\PYG{p}{(}\PYG{n}{node}\PYG{o}{.}\PYG{n}{fixed\PYGZus{}nodes}\PYG{p}{[}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{])}
+                \PYG{n}{svg} \PYG{o}{+=} \PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}\PYGZlt{}line x1=\PYGZsq{}}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{parent\PYGZus{}x}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZsq{} y1=\PYGZsq{}}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{parent\PYGZus{}y}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZsq{} x2=\PYGZsq{}}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{child\PYGZus{}x}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZsq{} y2=\PYGZsq{}}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{child\PYGZus{}y}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZsq{} stroke=\PYGZsq{}black\PYGZsq{}/\PYGZgt{}}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s+s2}{\PYGZdq{}}
+                \PYG{k}{if} \PYG{n}{node}\PYG{o}{.}\PYG{n}{status\PYGZus{}good}\PYG{p}{:}
+                    \PYG{n}{valid\PYGZus{}node} \PYG{o}{=} \PYG{n}{node}
+        
+        
+        \PYG{n}{svg} \PYG{o}{+=} \PYG{l+s+s1}{\PYGZsq{}\PYGZlt{}/svg\PYGZgt{}\PYGZsq{}}
+        \PYG{k}{with} \PYG{n+nb}{open}\PYG{p}{(}\PYG{n}{file\PYGZus{}name}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}w\PYGZsq{}}\PYG{p}{)} \PYG{k}{as} \PYG{n}{fp}\PYG{p}{:}
+            \PYG{n}{fp}\PYG{o}{.}\PYG{n}{write}\PYG{p}{(}\PYG{n}{svg}\PYG{p}{)}
+
+        
+
+\PYG{k}{class} \PYG{n+nc}{MatrixOptimizer}\PYG{p}{:}
+    \PYG{k}{def} \PYG{n+nf+fm}{\PYGZus{}\PYGZus{}init\PYGZus{}\PYGZus{}}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{,} \PYG{n}{cTable}\PYG{p}{:} \PYG{n}{TableHandler}\PYG{p}{,} \PYG{n}{tTable}\PYG{p}{:} \PYG{n}{TableHandler}\PYG{p}{,} \PYG{n}{max\PYGZus{}T}\PYG{p}{:} \PYG{n+nb}{float}\PYG{p}{):}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{max\PYGZus{}T} \PYG{o}{=} \PYG{n}{max\PYGZus{}T}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{cTable}\PYG{p}{:} \PYG{n}{TableHandler} \PYG{o}{=} \PYG{n}{cTable}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{tTable}\PYG{p}{:} \PYG{n}{TableHandler} \PYG{o}{=} \PYG{n}{tTable}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{cMatrix}\PYG{p}{:} \PYG{n}{np}\PYG{o}{.}\PYG{n}{array} \PYG{o}{=} \PYG{n}{cTable}\PYG{o}{.}\PYG{n}{matrix}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{tMatrix}\PYG{p}{:} \PYG{n}{np}\PYG{o}{.}\PYG{n}{array} \PYG{o}{=} \PYG{n}{tTable}\PYG{o}{.}\PYG{n}{matrix}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{rows}\PYG{p}{,} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{columns} \PYG{o}{=} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{cMatrix}\PYG{o}{.}\PYG{n}{shape}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{eliminated} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{((}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{rows}\PYG{p}{,} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{columns}\PYG{p}{),} \PYG{n}{dtype}\PYG{o}{=}\PYG{n+nb}{bool}\PYG{p}{)}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{treeDone} \PYG{o}{=} \PYG{k+kc}{False}
+
+    \PYG{k}{def} \PYG{n+nf}{refreshValues}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{):}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{cMatrix} \PYG{o}{=} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{cTable}\PYG{o}{.}\PYG{n}{matrix}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{tMatrix} \PYG{o}{=} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{tTable}\PYG{o}{.}\PYG{n}{matrix}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{rows}\PYG{p}{,} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{columns} \PYG{o}{=} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{cMatrix}\PYG{o}{.}\PYG{n}{shape}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{eliminated} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{((}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{rows}\PYG{p}{,} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{columns}\PYG{p}{),} \PYG{n}{dtype}\PYG{o}{=}\PYG{n+nb}{bool}\PYG{p}{)}   
+
+    \PYG{k}{def} \PYG{n+nf}{optimization1}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{):}
+        \PYG{n}{c\PYGZus{}argmin} \PYG{o}{=} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{cMatrix}\PYG{o}{.}\PYG{n}{argmin}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{)}
+        \PYG{n}{eliminated} \PYG{o}{=} \PYG{p}{[]}
+        \PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{rows}\PYG{p}{):}
+            \PYG{n}{t\PYGZus{}min} \PYG{o}{=} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{tMatrix}\PYG{p}{[}\PYG{n}{i}\PYG{p}{,}\PYG{n}{c\PYGZus{}argmin}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]]}
+            \PYG{n}{c\PYGZus{}min} \PYG{o}{=} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{cMatrix}\PYG{p}{[}\PYG{n}{i}\PYG{p}{,}\PYG{n}{c\PYGZus{}argmin}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]]}
+            \PYG{n}{eliminated}\PYG{o}{.}\PYG{n}{append}\PYG{p}{([} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{tMatrix}\PYG{p}{[}\PYG{n}{i}\PYG{p}{,}\PYG{n}{j}\PYG{p}{]} \PYG{o}{\PYGZgt{}} \PYG{n}{t\PYGZus{}min} \PYG{o+ow}{or} \PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{tMatrix}\PYG{p}{[}\PYG{n}{i}\PYG{p}{,}\PYG{n}{j}\PYG{p}{]} \PYG{o}{==} \PYG{n}{t\PYGZus{}min} \PYG{o+ow}{and} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{cMatrix}\PYG{p}{[}\PYG{n}{i}\PYG{p}{,}\PYG{n}{j}\PYG{p}{]} \PYG{o}{\PYGZgt{}} \PYG{n}{c\PYGZus{}min}\PYG{p}{)} \PYG{k}{for} \PYG{n}{j} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{columns}\PYG{p}{)} \PYG{p}{])}
+
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{eliminated} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{logical\PYGZus{}or}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{eliminated}\PYG{p}{,} \PYG{n}{np}\PYG{o}{.}\PYG{n}{array}\PYG{p}{(}\PYG{n}{eliminated}\PYG{p}{,} \PYG{n}{dtype}\PYG{o}{=}\PYG{n+nb}{bool}\PYG{p}{))}
+        \PYG{k}{return} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{eliminated}
+    
+    \PYG{k}{def} \PYG{n+nf}{optimization2}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{):}
+        \PYG{n}{t\PYGZus{}min} \PYG{o}{=} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{tMatrix}\PYG{o}{.}\PYG{n}{min}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{)}
+        \PYG{n}{t\PYGZus{}min\PYGZus{}sum} \PYG{o}{=} \PYG{n+nb}{sum}\PYG{p}{(}\PYG{n}{t\PYGZus{}min}\PYG{p}{)}
+        \PYG{n}{eliminated} \PYG{o}{=} \PYG{p}{[]}
+        \PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{rows}\PYG{p}{):}
+            \PYG{n}{eliminated}\PYG{o}{.}\PYG{n}{append}\PYG{p}{([} \PYG{n}{t\PYGZus{}min\PYGZus{}sum} \PYG{o}{\PYGZhy{}} \PYG{n}{t\PYGZus{}min}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]} \PYG{o}{+} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{tMatrix}\PYG{p}{[}\PYG{n}{i}\PYG{p}{,}\PYG{n}{j}\PYG{p}{]} \PYG{o}{\PYGZgt{}} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{max\PYGZus{}T} \PYG{k}{for} \PYG{n}{j} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{columns}\PYG{p}{)} \PYG{p}{])}
+
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{eliminated} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{logical\PYGZus{}or}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{eliminated}\PYG{p}{,} \PYG{n}{np}\PYG{o}{.}\PYG{n}{array}\PYG{p}{(}\PYG{n}{eliminated}\PYG{p}{,} \PYG{n}{dtype}\PYG{o}{=}\PYG{n+nb}{bool}\PYG{p}{))}
+        \PYG{k}{return} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{eliminated}
+    
+    \PYG{k}{def} \PYG{n+nf}{tree\PYGZus{}add\PYGZus{}current\PYGZus{}row\PYGZus{}nodes}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{,} \PYG{n}{fixed\PYGZus{}nodes}\PYG{p}{,} \PYG{n}{row}\PYG{p}{,} \PYG{n}{c\PYGZus{}argmin}\PYG{p}{,} \PYG{n}{t\PYGZus{}argmin}\PYG{p}{):}
+        \PYG{n}{current\PYGZus{}row\PYGZus{}good\PYGZus{}nodes} \PYG{o}{=} \PYG{p}{[]}
+        \PYG{k}{for} \PYG{n}{j} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{columns}\PYG{p}{):}
+            \PYG{k}{if} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{eliminated}\PYG{p}{[}\PYG{n}{row}\PYG{p}{,}\PYG{n}{j}\PYG{p}{]:}
+                \PYG{k}{continue}
+            
+            \PYG{n}{fixed\PYGZus{}nodes}\PYG{p}{[}\PYG{n}{row}\PYG{p}{]} \PYG{o}{=} \PYG{n}{j}
+            \PYG{n}{c\PYGZus{}sum} \PYG{o}{=} \PYG{n+nb}{sum}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{cMatrix}\PYG{p}{[}\PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{row}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{),}\PYG{n}{fixed\PYGZus{}nodes}\PYG{p}{])}
+            \PYG{n}{c\PYGZus{}sum} \PYG{o}{+=} \PYG{n+nb}{sum}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{cMatrix}\PYG{p}{[}\PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{row}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{,} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{rows}\PYG{p}{),}\PYG{n}{c\PYGZus{}argmin}\PYG{p}{[}\PYG{n}{row}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{:]])}
+            \PYG{n}{t\PYGZus{}sum} \PYG{o}{=} \PYG{n+nb}{sum}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{tMatrix}\PYG{p}{[}\PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{row}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{),}\PYG{n}{fixed\PYGZus{}nodes}\PYG{p}{])}
+            \PYG{n}{t\PYGZus{}sum} \PYG{o}{+=} \PYG{n+nb}{sum}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{tMatrix}\PYG{p}{[}\PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{row}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{,} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{rows}\PYG{p}{),}\PYG{n}{t\PYGZus{}argmin}\PYG{p}{[}\PYG{n}{row}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{:]])}
+            \PYG{n}{node} \PYG{o}{=} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{root}\PYG{o}{.}\PYG{n}{add\PYGZus{}child}\PYG{p}{(}\PYG{n}{fixed\PYGZus{}nodes}\PYG{p}{,} \PYG{n}{c\PYGZus{}sum}\PYG{p}{,} \PYG{n}{t\PYGZus{}sum}\PYG{p}{)}
+            \PYG{k}{if} \PYG{n}{t\PYGZus{}sum} \PYG{o}{\PYGZgt{}} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{max\PYGZus{}T}\PYG{p}{:}
+                \PYG{n}{node}\PYG{o}{.}\PYG{n}{status\PYGZus{}good} \PYG{o}{=} \PYG{k+kc}{False}
+            \PYG{k}{else}\PYG{p}{:}
+                \PYG{n}{current\PYGZus{}row\PYGZus{}good\PYGZus{}nodes}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}\PYG{n}{node}\PYG{p}{)}
+        \PYG{k}{return} \PYG{n}{current\PYGZus{}row\PYGZus{}good\PYGZus{}nodes}
+
+
+    \PYG{k}{def} \PYG{n+nf}{tree\PYGZus{}optimization}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{):}
+        \PYG{n}{c\PYGZus{}argmin} \PYG{o}{=} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{cMatrix}\PYG{o}{.}\PYG{n}{argmin}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{)}
+        \PYG{n}{t\PYGZus{}argmin} \PYG{o}{=} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{tMatrix}\PYG{o}{.}\PYG{n}{argmin}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{)}
+
+        \PYG{n}{fixed\PYGZus{}nodes} \PYG{o}{=} \PYG{p}{[]}
+        \PYG{n}{c\PYGZus{}sum} \PYG{o}{=} \PYG{n+nb}{sum}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{cMatrix}\PYG{p}{[}\PYG{n+nb}{range}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{rows}\PYG{p}{),}\PYG{n}{c\PYGZus{}argmin}\PYG{p}{])}
+        \PYG{n}{t\PYGZus{}sum} \PYG{o}{=} \PYG{n+nb}{sum}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{tMatrix}\PYG{p}{[}\PYG{n+nb}{range}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{rows}\PYG{p}{),}\PYG{n}{t\PYGZus{}argmin}\PYG{p}{])}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{root} \PYG{o}{=} \PYG{n}{Tree}\PYG{p}{()}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{root}\PYG{o}{.}\PYG{n}{set\PYGZus{}metrics}\PYG{p}{(}\PYG{n}{c\PYGZus{}sum}\PYG{p}{,} \PYG{n}{t\PYGZus{}sum}\PYG{p}{)}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{root}\PYG{o}{.}\PYG{n}{set\PYGZus{}status}\PYG{p}{(}\PYG{n}{status\PYGZus{}good}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{)}
+
+        \PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{rows}\PYG{p}{):}
+            \PYG{n}{fixed\PYGZus{}nodes}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{)}
+            \PYG{n}{current\PYGZus{}row\PYGZus{}good\PYGZus{}nodes} \PYG{o}{=} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{tree\PYGZus{}add\PYGZus{}current\PYGZus{}row\PYGZus{}nodes}\PYG{p}{(}\PYG{n}{fixed\PYGZus{}nodes}\PYG{p}{,} \PYG{n}{i}\PYG{p}{,} \PYG{n}{c\PYGZus{}argmin}\PYG{p}{,} \PYG{n}{t\PYGZus{}argmin}\PYG{p}{)}
+            
+            \PYG{n}{min\PYGZus{}c} \PYG{o}{=} \PYG{n}{current\PYGZus{}row\PYGZus{}good\PYGZus{}nodes}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]}\PYG{o}{.}\PYG{n}{c\PYGZus{}sum}
+            \PYG{n}{ind} \PYG{o}{=} \PYG{n}{current\PYGZus{}row\PYGZus{}good\PYGZus{}nodes}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]}\PYG{o}{.}\PYG{n}{fixed\PYGZus{}nodes}\PYG{p}{[}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{]}
+            \PYG{k}{for} \PYG{n}{i}\PYG{p}{,} \PYG{n}{node} \PYG{o+ow}{in} \PYG{n+nb}{enumerate}\PYG{p}{(}\PYG{n}{current\PYGZus{}row\PYGZus{}good\PYGZus{}nodes}\PYG{p}{):}
+                \PYG{k}{if} \PYG{n}{i} \PYG{o}{==} \PYG{l+m+mi}{0}\PYG{p}{:}
+                    \PYG{k}{continue}
+
+                \PYG{k}{if} \PYG{n}{node}\PYG{o}{.}\PYG{n}{c\PYGZus{}sum} \PYG{o}{\PYGZlt{}} \PYG{n}{min\PYGZus{}c}\PYG{p}{:}
+                    \PYG{n}{min\PYGZus{}c} \PYG{o}{=} \PYG{n}{node}\PYG{o}{.}\PYG{n}{c\PYGZus{}sum}
+                    \PYG{n}{ind} \PYG{o}{=} \PYG{n}{node}\PYG{o}{.}\PYG{n}{fixed\PYGZus{}nodes}\PYG{p}{[}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{]}
+            
+            \PYG{n}{fixed\PYGZus{}nodes}\PYG{p}{[}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{]} \PYG{o}{=} \PYG{n}{ind}
+            \PYG{k}{for} \PYG{n}{node} \PYG{o+ow}{in} \PYG{n}{current\PYGZus{}row\PYGZus{}good\PYGZus{}nodes}\PYG{p}{:}
+                \PYG{k}{if} \PYG{n}{node}\PYG{o}{.}\PYG{n}{fixed\PYGZus{}nodes}\PYG{p}{[}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{]} \PYG{o}{!=} \PYG{n}{ind}\PYG{p}{:}
+                    \PYG{n}{node}\PYG{o}{.}\PYG{n}{set\PYGZus{}status}\PYG{p}{(}\PYG{k+kc}{False}\PYG{p}{)}
+
+        
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{root}\PYG{o}{.}\PYG{n}{print\PYGZus{}tree}\PYG{p}{()}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{treeDone} \PYG{o}{=} \PYG{k+kc}{True}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{root}\PYG{o}{.}\PYG{n}{toSvg}\PYG{p}{()}
+        \PYG{n}{msg} \PYG{o}{=} \PYG{n}{QMessageBox}\PYG{p}{()}
+        \PYG{n}{msg}\PYG{o}{.}\PYG{n}{setText}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}Дерево успешно построено\PYGZsq{}}\PYG{p}{)}
+        \PYG{n}{msg}\PYG{o}{.}\PYG{n}{exec}\PYG{p}{()}
+\end{Verbatim}

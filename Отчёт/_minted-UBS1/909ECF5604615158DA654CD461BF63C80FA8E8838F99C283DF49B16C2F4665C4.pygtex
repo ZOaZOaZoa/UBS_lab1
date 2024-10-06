@@ -1,0 +1,65 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from} \PYG{n+nn}{PyQt6.QtWidgets} \PYG{k+kn}{import} \PYG{n}{QMessageBox}
+
+\PYG{k}{def} \PYG{n+nf}{showMessageBox}\PYG{p}{(}\PYG{n}{title}\PYG{p}{:} \PYG{n+nb}{str}\PYG{p}{,} \PYG{n}{description}\PYG{p}{:} \PYG{n+nb}{str}\PYG{p}{,} \PYG{n}{icon}\PYG{p}{:} \PYG{n}{QMessageBox}\PYG{o}{.}\PYG{n}{Icon}\PYG{p}{):}
+    \PYG{n}{msgBox} \PYG{o}{=} \PYG{n}{QMessageBox}\PYG{p}{()}
+    \PYG{n}{msgBox}\PYG{o}{.}\PYG{n}{setText}\PYG{p}{(}\PYG{n}{title}\PYG{p}{)}
+    \PYG{n}{msgBox}\PYG{o}{.}\PYG{n}{setInformativeText}\PYG{p}{(}\PYG{n}{description}\PYG{p}{)}
+    \PYG{n}{msgBox}\PYG{o}{.}\PYG{n}{setIcon}\PYG{p}{(}\PYG{n}{icon}\PYG{p}{)}
+    \PYG{n}{msgBox}\PYG{o}{.}\PYG{n}{exec}\PYG{p}{()}
+
+\PYG{k}{class} \PYG{n+nc}{TemplateMessageBox}\PYG{p}{(}\PYG{n}{QMessageBox}\PYG{p}{):}
+    \PYG{k}{def} \PYG{n+nf+fm}{\PYGZus{}\PYGZus{}init\PYGZus{}\PYGZus{}}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{,} \PYG{n}{title}\PYG{p}{:} \PYG{n+nb}{str}\PYG{p}{,} \PYG{n}{description}\PYG{p}{:} \PYG{n+nb}{str}\PYG{p}{,} \PYG{n}{icon}\PYG{p}{:} \PYG{n}{QMessageBox}\PYG{o}{.}\PYG{n}{Icon}\PYG{p}{):}
+        \PYG{n+nb}{super}\PYG{p}{()}\PYG{o}{.}\PYG{n+nf+fm}{\PYGZus{}\PYGZus{}init\PYGZus{}\PYGZus{}}\PYG{p}{()}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{setText}\PYG{p}{(}\PYG{n}{title}\PYG{p}{)}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{setInformativeText}\PYG{p}{(}\PYG{n}{description}\PYG{p}{)}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{setIcon}\PYG{p}{(}\PYG{n}{icon}\PYG{p}{)}
+
+\PYG{k}{class} \PYG{n+nc}{DataGetter}\PYG{p}{:}
+    \PYG{k}{def} \PYG{n+nf+fm}{\PYGZus{}\PYGZus{}init\PYGZus{}\PYGZus{}}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{,} \PYG{n}{tables}\PYG{p}{:} \PYG{n+nb}{dict}\PYG{p}{,} \PYG{n}{lineEdits}\PYG{p}{:} \PYG{n+nb}{dict}\PYG{p}{,} \PYG{n}{lineEditsLinkedTables}\PYG{p}{:} \PYG{n+nb}{dict} \PYG{o}{=} \PYG{p}{\PYGZob{}\PYGZcb{}):}
+\PYG{+w}{        }\PYG{l+s+sd}{\PYGZsq{}\PYGZsq{}\PYGZsq{}}
+\PYG{l+s+sd}{        tables \PYGZhy{}\PYGZgt{} dict(str: TableHandler)}
+\PYG{l+s+sd}{        lineEdits \PYGZhy{}\PYGZgt{} dict(str: QLineEdit)}
+\PYG{l+s+sd}{        \PYGZsq{}\PYGZsq{}\PYGZsq{}}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{tables} \PYG{o}{=} \PYG{n}{tables}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{lineEdits} \PYG{o}{=} \PYG{n}{lineEdits}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{data\PYGZus{}good} \PYG{o}{=} \PYG{k+kc}{False}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{lineEditsTexts} \PYG{o}{=} \PYG{n+nb}{dict}\PYG{p}{()}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{lineEditsLinkedTables} \PYG{o}{=} \PYG{n}{lineEditsLinkedTables}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{inputBtnMode} \PYG{o}{=} \PYG{l+s+s1}{\PYGZsq{}input\PYGZsq{}}
+
+    \PYG{k}{def} \PYG{n+nf}{\PYGZus{}get\PYGZus{}and\PYGZus{}check}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{):}
+\PYG{+w}{        }\PYG{l+s+sd}{\PYGZsq{}\PYGZsq{}\PYGZsq{}}
+\PYG{l+s+sd}{        Считывает данные из полей для ввода и выполняет проверки на корректность введённых данных}
+\PYG{l+s+sd}{        \PYGZsq{}\PYGZsq{}\PYGZsq{}}
+        \PYG{k}{for} \PYG{n}{name}\PYG{p}{,} \PYG{n}{table} \PYG{o+ow}{in} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{tables}\PYG{o}{.}\PYG{n}{items}\PYG{p}{():}
+            \PYG{n}{table}\PYG{o}{.}\PYG{n}{toNumpy}\PYG{p}{()}
+            \PYG{k}{if} \PYG{o+ow}{not} \PYG{n}{table}\PYG{o}{.}\PYG{n}{data\PYGZus{}good}\PYG{p}{:}
+                \PYG{k}{raise} \PYG{n+ne}{ValueError}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{name}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{. Неверно введённые данные\PYGZdq{}}\PYG{p}{)}
+            
+        \PYG{k}{for} \PYG{n}{name}\PYG{p}{,} \PYG{n}{lineEdit} \PYG{o+ow}{in} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{lineEdits}\PYG{o}{.}\PYG{n}{items}\PYG{p}{():}
+            \PYG{n}{text} \PYG{o}{=} \PYG{n}{lineEdit}\PYG{o}{.}\PYG{n}{text}\PYG{p}{()}
+            \PYG{k}{if} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{text}\PYG{p}{)} \PYG{o}{==} \PYG{l+m+mi}{0}\PYG{p}{:}
+                \PYG{k}{raise} \PYG{n+ne}{ValueError}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{name}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{. Должно быть введено значение\PYGZdq{}}\PYG{p}{)}
+            \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{lineEditsTexts}\PYG{p}{[}\PYG{n}{name}\PYG{p}{]} \PYG{o}{=} \PYG{n}{text}
+            
+            
+            \PYG{k}{if} \PYG{n}{name} \PYG{o+ow}{not} \PYG{o+ow}{in} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{lineEditsLinkedTables}\PYG{p}{:}
+                \PYG{k}{return}
+            
+            \PYG{n}{table\PYGZus{}name} \PYG{o}{=} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{lineEditsLinkedTables}\PYG{p}{[}\PYG{n}{name}\PYG{p}{]}
+            \PYG{n}{theorMin} \PYG{o}{=} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{tables}\PYG{p}{[}\PYG{n}{table\PYGZus{}name}\PYG{p}{]}\PYG{o}{.}\PYG{n}{theorMin}
+            \PYG{k}{if} \PYG{n+nb}{float}\PYG{p}{(}\PYG{n}{text}\PYG{p}{)} \PYG{o}{\PYGZlt{}} \PYG{n}{theorMin}\PYG{p}{:}
+                \PYG{k}{raise} \PYG{n+ne}{ValueError}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{name}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{. Значение не может быть меньше теоретического минимума равного }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{theorMin}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+            
+    \PYG{k}{def} \PYG{n+nf}{catch\PYGZus{}input\PYGZus{}errors}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{)} \PYG{o}{\PYGZhy{}\PYGZgt{}} \PYG{n+nb}{bool}\PYG{p}{:}
+        \PYG{k}{try}\PYG{p}{:}
+            \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{\PYGZus{}get\PYGZus{}and\PYGZus{}check}\PYG{p}{()}
+            \PYG{n}{msg} \PYG{o}{=} \PYG{n}{TemplateMessageBox}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}Данные успешно введены\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}\PYGZdq{}}\PYG{p}{,} \PYG{n}{QMessageBox}\PYG{o}{.}\PYG{n}{Icon}\PYG{o}{.}\PYG{n}{Information}\PYG{p}{)}
+            \PYG{n}{msg}\PYG{o}{.}\PYG{n}{exec}\PYG{p}{()}
+            \PYG{k}{return} \PYG{k+kc}{False}
+        \PYG{k}{except} \PYG{n+ne}{ValueError} \PYG{k}{as} \PYG{n}{e}\PYG{p}{:}
+            \PYG{n}{msg} \PYG{o}{=} \PYG{n}{TemplateMessageBox}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}Неверно введённые данные\PYGZdq{}}\PYG{p}{,} \PYG{n+nb}{str}\PYG{p}{(}\PYG{n}{e}\PYG{p}{),} \PYG{n}{QMessageBox}\PYG{o}{.}\PYG{n}{Icon}\PYG{o}{.}\PYG{n}{Warning}\PYG{p}{)}
+            \PYG{n}{msg}\PYG{o}{.}\PYG{n}{exec}\PYG{p}{()}
+            \PYG{k}{return} \PYG{k+kc}{True}
+\end{Verbatim}

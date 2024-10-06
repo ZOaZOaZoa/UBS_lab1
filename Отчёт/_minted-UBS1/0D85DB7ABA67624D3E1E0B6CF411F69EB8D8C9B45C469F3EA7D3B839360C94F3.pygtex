@@ -1,0 +1,118 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from} \PYG{n+nn}{PyQt6.QtWidgets} \PYG{k+kn}{import} \PYG{n}{QTableWidget}\PYG{p}{,} \PYG{n}{QTableWidgetItem}\PYG{p}{,} \PYG{n}{QMessageBox}
+\PYG{k+kn}{from} \PYG{n+nn}{PyQt6.QtGui} \PYG{k+kn}{import} \PYG{n}{QColor}
+\PYG{k+kn}{from} \PYG{n+nn}{userInfo} \PYG{k+kn}{import} \PYG{n}{TemplateMessageBox}
+\PYG{k+kn}{import} \PYG{n+nn}{numpy} \PYG{k}{as} \PYG{n+nn}{np}
+
+\PYG{k}{class} \PYG{n+nc}{TableHandler}\PYG{p}{:}
+    \PYG{n}{valueErrorTitle}\PYG{p}{:} \PYG{n+nb}{str} \PYG{o}{=} \PYG{l+s+s1}{\PYGZsq{}Введены неверные данные!\PYGZsq{}}
+    \PYG{n}{valueErrorMessages}\PYG{p}{:} \PYG{n+nb}{dict} \PYG{o}{=} \PYG{p}{\PYGZob{}}
+        \PYG{l+s+s1}{\PYGZsq{}empty\PYGZus{}cell\PYGZsq{}}\PYG{p}{:} \PYG{n}{TemplateMessageBox}\PYG{p}{(}\PYG{n}{valueErrorTitle}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}Заполните все ячейки матрицы.\PYGZsq{}}\PYG{p}{,} \PYG{n}{QMessageBox}\PYG{o}{.}\PYG{n}{Icon}\PYG{o}{.}\PYG{n}{Warning}\PYG{p}{),}
+        \PYG{l+s+s1}{\PYGZsq{}non\PYGZus{}float\PYGZsq{}}\PYG{p}{:} \PYG{n}{TemplateMessageBox}\PYG{p}{(}\PYG{n}{valueErrorTitle}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}Все значения должны быть числовыми.\PYGZsq{}}\PYG{p}{,} \PYG{n}{QMessageBox}\PYG{o}{.}\PYG{n}{Icon}\PYG{o}{.}\PYG{n}{Warning}\PYG{p}{),}
+        \PYG{l+s+s1}{\PYGZsq{}negative\PYGZus{}value\PYGZsq{}}\PYG{p}{:} \PYG{n}{TemplateMessageBox}\PYG{p}{(}\PYG{n}{valueErrorTitle}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}Значение не может быть отрицательным.\PYGZsq{}}\PYG{p}{,} \PYG{n}{QMessageBox}\PYG{o}{.}\PYG{n}{Icon}\PYG{o}{.}\PYG{n}{Warning}\PYG{p}{)}
+    \PYG{p}{\PYGZcb{}}
+
+    \PYG{k}{def} \PYG{n+nf+fm}{\PYGZus{}\PYGZus{}init\PYGZus{}\PYGZus{}}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{,} \PYG{n}{table}\PYG{p}{:} \PYG{n}{QTableWidget}\PYG{p}{,} \PYG{n}{defaultValues}\PYG{p}{:} \PYG{n}{np}\PYG{o}{.}\PYG{n}{array} \PYG{o}{=} \PYG{k+kc}{None}\PYG{p}{):}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{table}\PYG{p}{:} \PYG{n}{QTableWidget} \PYG{o}{=} \PYG{n}{table}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{rows} \PYG{o}{=} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{table}\PYG{o}{.}\PYG{n}{rowCount}\PYG{p}{()}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{columns} \PYG{o}{=} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{table}\PYG{o}{.}\PYG{n}{columnCount}\PYG{p}{()}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{matrix}\PYG{p}{:} \PYG{n}{np}\PYG{o}{.}\PYG{n}{ndarray} \PYG{o}{=} \PYG{n}{defaultValues}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{data\PYGZus{}good} \PYG{o}{=} \PYG{k+kc}{True}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{theorMin} \PYG{o}{=} \PYG{k+kc}{None}
+
+        \PYG{k}{if} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{matrix} \PYG{o+ow}{is} \PYG{k+kc}{None}\PYG{p}{:}
+            \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{data\PYGZus{}good} \PYG{o}{=} \PYG{k+kc}{False}
+            \PYG{k}{return}
+
+        \PYG{k}{if} \PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{rows}\PYG{p}{,} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{columns}\PYG{p}{)} \PYG{o}{!=} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{matrix}\PYG{o}{.}\PYG{n}{shape}\PYG{p}{:}
+            \PYG{k}{raise} \PYG{n+ne}{ValueError}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}Table shape does not match passed defaultValues: np.array shape\PYGZdq{}}\PYG{p}{)}
+        
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{toTable}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{matrix}\PYG{p}{)}
+
+    \PYG{n+nd}{@staticmethod}
+    \PYG{k}{def} \PYG{n+nf}{floatValidate}\PYG{p}{(}\PYG{n}{item}\PYG{p}{:} \PYG{n}{QTableWidgetItem}\PYG{p}{):}
+\PYG{+w}{        }\PYG{l+s+sd}{\PYGZsq{}\PYGZsq{}\PYGZsq{}}
+\PYG{l+s+sd}{        Валидирует значение в соответствии со следующими критериями: значение непустое, вещественное типа float, неотрицательное. Возвращает код результата проверки и само проверенное значение, если оно прошло валидацию.}
+\PYG{l+s+sd}{        \PYGZsq{}\PYGZsq{}\PYGZsq{}}
+        \PYG{k}{if} \PYG{o+ow}{not} \PYG{n}{item}\PYG{p}{:}
+            \PYG{k}{return} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}empty\PYGZus{}cell\PYGZsq{}}\PYG{p}{,} \PYG{k+kc}{None}\PYG{p}{)}
+        
+        \PYG{k}{try}\PYG{p}{:}
+            \PYG{n}{item\PYGZus{}f} \PYG{o}{=} \PYG{n+nb}{float}\PYG{p}{(}\PYG{n}{item}\PYG{o}{.}\PYG{n}{text}\PYG{p}{())}
+        \PYG{k}{except} \PYG{n+ne}{ValueError}\PYG{p}{:}
+            \PYG{k}{return} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}non\PYGZus{}float\PYGZsq{}}\PYG{p}{,} \PYG{k+kc}{None}\PYG{p}{)}
+        
+        \PYG{k}{if} \PYG{n}{item\PYGZus{}f} \PYG{o}{\PYGZlt{}} \PYG{l+m+mi}{0}\PYG{p}{:}
+            \PYG{k}{return} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}negative\PYGZus{}value\PYGZsq{}}\PYG{p}{,} \PYG{k+kc}{None}\PYG{p}{)}
+        
+        \PYG{k}{return} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}good\PYGZsq{}}\PYG{p}{,} \PYG{n}{item\PYGZus{}f}\PYG{p}{)}
+    
+    \PYG{n+nd}{@staticmethod}
+    \PYG{k}{def} \PYG{n+nf}{floatValidateAndMessage}\PYG{p}{(}\PYG{n}{item}\PYG{p}{:} \PYG{n}{QTableWidgetItem}\PYG{p}{):}
+\PYG{+w}{        }\PYG{l+s+sd}{\PYGZsq{}\PYGZsq{}\PYGZsq{}}
+\PYG{l+s+sd}{        Валидирует введённое значение и выводит сообщение, если значение не прошло валидацию. Проверяемые критерии определяются floatValidate()}
+\PYG{l+s+sd}{        \PYGZsq{}\PYGZsq{}\PYGZsq{}}
+        \PYG{n}{status}\PYG{p}{,} \PYG{n}{value} \PYG{o}{=} \PYG{n}{TableHandler}\PYG{o}{.}\PYG{n}{floatValidate}\PYG{p}{(}\PYG{n}{item}\PYG{p}{)}
+        \PYG{k}{if} \PYG{n}{status} \PYG{o}{!=} \PYG{l+s+s1}{\PYGZsq{}good\PYGZsq{}}\PYG{p}{:}
+            \PYG{n}{TableHandler}\PYG{o}{.}\PYG{n}{valueErrorMessages}\PYG{p}{[}\PYG{n}{status}\PYG{p}{]}\PYG{o}{.}\PYG{n}{exec}\PYG{p}{()}
+            \PYG{k}{return} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}err\PYGZsq{}}\PYG{p}{,} \PYG{k+kc}{None}\PYG{p}{)}
+        
+        \PYG{k}{return} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}good\PYGZsq{}}\PYG{p}{,} \PYG{n}{value}\PYG{p}{)}
+
+    \PYG{k}{def} \PYG{n+nf}{\PYGZus{}calcTheorMin}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{):}
+\PYG{+w}{        }\PYG{l+s+sd}{\PYGZsq{}\PYGZsq{}\PYGZsq{}}
+\PYG{l+s+sd}{        Расчёт теоретического суммарного минимума для набора из единичных значений из каждой строки }
+\PYG{l+s+sd}{        \PYGZsq{}\PYGZsq{}\PYGZsq{}}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{theorMin} \PYG{o}{=} \PYG{n+nb}{sum}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{matrix}\PYG{o}{.}\PYG{n}{min}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{))}
+
+    \PYG{k}{def} \PYG{n+nf}{toNumpy}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{):}
+\PYG{+w}{        }\PYG{l+s+sd}{\PYGZsq{}\PYGZsq{}\PYGZsq{}}
+\PYG{l+s+sd}{        Запись значений из таблицы QTableWidget в матрицу np.array}
+\PYG{l+s+sd}{        \PYGZsq{}\PYGZsq{}\PYGZsq{}}
+        \PYG{n}{matrix} \PYG{o}{=} \PYG{p}{[]}
+        \PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{table}\PYG{o}{.}\PYG{n}{rowCount}\PYG{p}{()):}
+            \PYG{n}{row} \PYG{o}{=} \PYG{p}{[]}
+            \PYG{k}{for} \PYG{n}{j} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{table}\PYG{o}{.}\PYG{n}{columnCount}\PYG{p}{()):}
+                \PYG{n}{item} \PYG{o}{=} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{table}\PYG{o}{.}\PYG{n}{item}\PYG{p}{(}\PYG{n}{i}\PYG{p}{,} \PYG{n}{j}\PYG{p}{)}
+                
+                \PYG{n}{status}\PYG{p}{,} \PYG{n}{value} \PYG{o}{=} \PYG{n}{TableHandler}\PYG{o}{.}\PYG{n}{floatValidateAndMessage}\PYG{p}{(}\PYG{n}{item}\PYG{p}{)}
+                \PYG{k}{if} \PYG{n}{status} \PYG{o}{==} \PYG{l+s+s1}{\PYGZsq{}err\PYGZsq{}}\PYG{p}{:}
+                    \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{table}\PYG{o}{.}\PYG{n}{setCurrentCell}\PYG{p}{(}\PYG{n}{i}\PYG{p}{,} \PYG{n}{j}\PYG{p}{)}
+                    \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{data\PYGZus{}good} \PYG{o}{=} \PYG{k+kc}{False}
+                    \PYG{k}{return} \PYG{k+kc}{None}
+                    
+                \PYG{n}{row} \PYG{o}{+=} \PYG{p}{[}\PYG{n}{value}\PYG{p}{,]}
+            \PYG{n}{matrix} \PYG{o}{+=} \PYG{p}{[}\PYG{n}{row}\PYG{p}{,]}
+        
+        \PYG{n}{np\PYGZus{}matrix} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{array}\PYG{p}{(}\PYG{n}{matrix}\PYG{p}{,} \PYG{n}{dtype}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{float16}\PYG{p}{)}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{matrix} \PYG{o}{=} \PYG{n}{np\PYGZus{}matrix}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{data\PYGZus{}good} \PYG{o}{=} \PYG{k+kc}{True}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{\PYGZus{}calcTheorMin}\PYG{p}{()}
+        \PYG{k}{return} \PYG{n}{np\PYGZus{}matrix}
+
+    \PYG{k}{def} \PYG{n+nf}{toTable}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{,} \PYG{n}{matrix}\PYG{p}{:} \PYG{n}{np}\PYG{o}{.}\PYG{n}{array}\PYG{p}{):}
+\PYG{+w}{        }\PYG{l+s+sd}{\PYGZsq{}\PYGZsq{}\PYGZsq{}}
+\PYG{l+s+sd}{        Запись значений из матрицы np.array в таблицу QTableWidget}
+\PYG{l+s+sd}{        \PYGZsq{}\PYGZsq{}\PYGZsq{}}
+        \PYG{k}{if} \PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{rows}\PYG{p}{,} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{columns}\PYG{p}{)} \PYG{o}{!=} \PYG{n}{matrix}\PYG{o}{.}\PYG{n}{shape}\PYG{p}{:}
+            \PYG{k}{raise} \PYG{n+ne}{ValueError}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}Table shape does not match passed np.array shape\PYGZdq{}}\PYG{p}{)}
+
+        \PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{rows}\PYG{p}{):}
+            \PYG{k}{for} \PYG{n}{j} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{columns}\PYG{p}{):}
+                \PYG{n}{value} \PYG{o}{=} \PYG{n}{QTableWidgetItem}\PYG{p}{(}\PYG{n+nb}{str}\PYG{p}{(}\PYG{n}{matrix}\PYG{p}{[}\PYG{n}{i}\PYG{p}{,}\PYG{n}{j}\PYG{p}{]))}
+                \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{table}\PYG{o}{.}\PYG{n}{setItem}\PYG{p}{(}\PYG{n}{i}\PYG{p}{,} \PYG{n}{j}\PYG{p}{,} \PYG{n}{value}\PYG{p}{)}
+    
+    \PYG{k}{def} \PYG{n+nf}{colorize\PYGZus{}cells}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{,} \PYG{n}{mask}\PYG{p}{:} \PYG{n}{np}\PYG{o}{.}\PYG{n}{array}\PYG{p}{):}
+        \PYG{k}{if} \PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{table}\PYG{o}{.}\PYG{n}{rowCount}\PYG{p}{(),} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{table}\PYG{o}{.}\PYG{n}{columnCount}\PYG{p}{())} \PYG{o}{!=} \PYG{n}{mask}\PYG{o}{.}\PYG{n}{shape}\PYG{p}{:}
+            \PYG{k}{raise} \PYG{n+ne}{ValueError}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}Table shape does not match pased np.array shape\PYGZdq{}}\PYG{p}{)}
+
+        \PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{table}\PYG{o}{.}\PYG{n}{rowCount}\PYG{p}{()):}
+            \PYG{k}{for} \PYG{n}{j} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{table}\PYG{o}{.}\PYG{n}{columnCount}\PYG{p}{()):}
+                \PYG{k}{if} \PYG{n}{mask}\PYG{p}{[}\PYG{n}{i}\PYG{p}{,}\PYG{n}{j}\PYG{p}{]} \PYG{o}{==} \PYG{k+kc}{True}\PYG{p}{:}
+                    \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{table}\PYG{o}{.}\PYG{n}{item}\PYG{p}{(}\PYG{n}{i}\PYG{p}{,} \PYG{n}{j}\PYG{p}{)}\PYG{o}{.}\PYG{n}{setBackground}\PYG{p}{(}\PYG{n}{QColor}\PYG{p}{(}\PYG{l+m+mi}{200}\PYG{p}{,}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{l+m+mi}{0}\PYG{p}{))}
+
+    \PYG{k}{def} \PYG{n+nf}{decolorize\PYGZus{}cells}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{):}
+        \PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{table}\PYG{o}{.}\PYG{n}{rowCount}\PYG{p}{()):}
+            \PYG{k}{for} \PYG{n}{j} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{table}\PYG{o}{.}\PYG{n}{columnCount}\PYG{p}{()):}
+                \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{table}\PYG{o}{.}\PYG{n}{item}\PYG{p}{(}\PYG{n}{i}\PYG{p}{,} \PYG{n}{j}\PYG{p}{)}\PYG{o}{.}\PYG{n}{setBackground}\PYG{p}{(}\PYG{n}{QColor}\PYG{p}{(}\PYG{l+m+mi}{255}\PYG{p}{,}\PYG{l+m+mi}{255}\PYG{p}{,}\PYG{l+m+mi}{255}\PYG{p}{))}
+\end{Verbatim}

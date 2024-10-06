@@ -6,9 +6,18 @@
 %Соответствующий математический шрифт для Times new roman
 \usepackage{newtxmath}
 \usepackage{fontspec} 
+%\usepackage{polyglossia}
 %Times new roman
 \defaultfontfeatures{Ligatures={TeX},Renderer=Basic} 
 \setmainfont[Ligatures={TeX,Historic}]{Times New Roman}
+\setmainfont{Times New Roman}
+\setsansfont{Arial}
+\setmonofont{Courier New}
+\newfontfamily\cyrillicfont[Script=Cyrillic]{Times New Roman}
+\newfontfamily\cyrillicfontsf[Script=Cyrillic]{Arial}
+\newfontfamily\cyrillicfonttt[Script=Cyrillic]{Courier New}
+
+%\setdefaultlanguage{russian}
 
 %Геометрия
 \usepackage{geometry}
@@ -49,6 +58,51 @@
 \usepackage{wrapfig}
 \usepackage{tikz}
 \usetikzlibrary{calc}
+\usetikzlibrary{shapes.geometric, shapes.misc, arrows}
+
+\tikzstyle{startstop} = [rectangle, rounded corners, 
+minimum width=3cm, 
+minimum height=1cm,
+text centered, 
+draw=black]
+
+\tikzstyle{io} = [trapezium, 
+trapezium stretches=true, % A later addition
+trapezium left angle=70, 
+trapezium right angle=110, 
+minimum width=3cm, 
+minimum height=1cm, text centered, 
+draw=black]
+
+\tikzstyle{process} = [rectangle, 
+minimum width=3cm, 
+minimum height=1cm, 
+text centered, 
+text width=5cm, 
+draw=black]
+
+\tikzstyle{decision} = [diamond, 
+minimum width=3cm, 
+minimum height=1cm, 
+text centered, 
+draw=black]
+\tikzstyle{arrow} = [thick,->,>=stealth]
+
+\tikzstyle{startfor} = [chamfered rectangle, 
+chamfered rectangle corners={north west, north east},
+minimum width=3cm, 
+minimum height=1cm, 
+text centered, 
+draw=black]
+
+\tikzstyle{endfor} = [chamfered rectangle, 
+chamfered rectangle corners={south west, south east},
+minimum width=3cm, 
+minimum height=1cm, 
+text centered, 
+draw=black]
+\tikzstyle{arrow} = [thick,->,>=stealth]
+
 %Настройка ссылок
 \usepackage{hyperref}
 %\usepackage{upgreek}
@@ -77,6 +131,7 @@
 
 %Листинги кода и их стили
 \usepackage{listings}
+\usepackage{minted}
 \lstdefinestyle{c++} {
 	language=C++,
 	breaklines=true,
@@ -94,10 +149,9 @@
 	breaklines=true,
 	frame=single,
 	numbers=left,
-	basicstyle=\footnotesize\ttfamily,
 	keywordstyle=\bfseries\color{green!40!black},
-	frame=lines
-	basicstyle=\footnotesize
+	frame=lines,
+	basicstyle=\footnotesize\rmfamily
 }
 
 \lstdefinestyle{cmd}{

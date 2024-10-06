@@ -5,3 +5,7 @@
 \contentsline {subsection}{\numberline {2.2}Вторая оптимизация}{4}{subsection.2.2}%
 \contentsline {subsection}{\numberline {2.3}Оптимизация методом ветвления}{5}{subsection.2.3}%
 \contentsline {section}{\numberline {3}Реализация программы}{7}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Описание модулей программы}{7}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Пример работы программы}{7}{subsection.3.2}%
+\contentsline {section}{\numberline {А}Блок-схемы алгоритмов}{11}{appendix.A}%
+\contentsline {section}{\numberline {Б}Листинги файлов программы}{13}{appendix.B}%

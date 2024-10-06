@@ -1,0 +1,112 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from} \PYG{n+nn}{PyQt6} \PYG{k+kn}{import} \PYG{n}{uic}
+\PYG{k+kn}{from} \PYG{n+nn}{PyQt6.QtWidgets} \PYG{k+kn}{import} \PYG{n}{QApplication}\PYG{p}{,} \PYG{n}{QPushButton}\PYG{p}{,} \PYG{n}{QLabel}\PYG{p}{,} \PYG{n}{QScrollArea}
+\PYG{k+kn}{from} \PYG{n+nn}{PyQt6.QtCore} \PYG{k+kn}{import} \PYG{n}{QRegularExpression}
+\PYG{k+kn}{from} \PYG{n+nn}{PyQt6.QtSvg} \PYG{k+kn}{import} \PYG{n}{QSvgRenderer}
+\PYG{k+kn}{from} \PYG{n+nn}{PyQt6.QtGui} \PYG{k+kn}{import} \PYG{n}{QRegularExpressionValidator}\PYG{p}{,} \PYG{n}{QPainter}
+\PYG{k+kn}{from} \PYG{n+nn}{userInfo} \PYG{k+kn}{import} \PYG{n}{DataGetter}
+\PYG{k+kn}{import} \PYG{n+nn}{numpy} \PYG{k}{as} \PYG{n+nn}{np}
+
+\PYG{n}{cMatrixDefault} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{array}\PYG{p}{([}
+    \PYG{p}{[}\PYG{l+m+mf}{4.5}\PYG{p}{,} \PYG{l+m+mi}{7}\PYG{p}{,} \PYG{l+m+mi}{2}\PYG{p}{,} \PYG{l+m+mi}{2}\PYG{p}{],}
+    \PYG{p}{[}\PYG{l+m+mi}{5}\PYG{p}{,} \PYG{l+m+mi}{8}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{,} \PYG{l+m+mi}{3}\PYG{p}{],}
+    \PYG{p}{[}\PYG{l+m+mf}{5.5}\PYG{p}{,} \PYG{l+m+mi}{9}\PYG{p}{,} \PYG{l+m+mi}{6}\PYG{p}{,} \PYG{l+m+mi}{2}\PYG{p}{],}
+    \PYG{p}{[}\PYG{l+m+mi}{6}\PYG{p}{,} \PYG{l+m+mi}{10}\PYG{p}{,} \PYG{l+m+mi}{7}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{],}
+    \PYG{p}{[}\PYG{l+m+mf}{6.5}\PYG{p}{,} \PYG{l+m+mi}{7}\PYG{p}{,} \PYG{l+m+mi}{3}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{]}
+\PYG{p}{],} \PYG{n}{dtype}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{float16}\PYG{p}{)}
+\PYG{n}{tMatrixDefault} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{array}\PYG{p}{([}
+    \PYG{p}{[}\PYG{l+m+mf}{4.5}\PYG{p}{,} \PYG{l+m+mi}{3}\PYG{p}{,} \PYG{l+m+mi}{2}\PYG{p}{,} \PYG{l+m+mi}{9}\PYG{p}{],}
+    \PYG{p}{[}\PYG{l+m+mi}{5}\PYG{p}{,} \PYG{l+m+mi}{6}\PYG{p}{,} \PYG{l+m+mi}{5}\PYG{p}{,} \PYG{l+m+mi}{10}\PYG{p}{],}
+    \PYG{p}{[}\PYG{l+m+mf}{5.5}\PYG{p}{,} \PYG{l+m+mi}{7}\PYG{p}{,} \PYG{l+m+mi}{6}\PYG{p}{,} \PYG{l+m+mi}{11}\PYG{p}{],}
+    \PYG{p}{[}\PYG{l+m+mi}{6}\PYG{p}{,} \PYG{l+m+mi}{8}\PYG{p}{,} \PYG{l+m+mi}{7}\PYG{p}{,} \PYG{l+m+mi}{12}\PYG{p}{],}
+    \PYG{p}{[}\PYG{l+m+mf}{6.5}\PYG{p}{,} \PYG{l+m+mi}{9}\PYG{p}{,} \PYG{l+m+mi}{8}\PYG{p}{,} \PYG{l+m+mi}{5}\PYG{p}{]}
+\PYG{p}{],} \PYG{n}{dtype}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{float16}\PYG{p}{)}
+\PYG{n}{max\PYGZus{}T\PYGZus{}default} \PYG{o}{=} \PYG{l+m+mi}{25}
+
+\PYG{k}{def} \PYG{n+nf}{InputBtnClick}\PYG{p}{(}\PYG{n}{dataGetter}\PYG{p}{:} \PYG{n}{DataGetter}\PYG{p}{,} \PYG{n}{matrixOptimizer}\PYG{p}{,} \PYG{n}{inputBtn}\PYG{p}{:} \PYG{n}{QPushButton}\PYG{p}{,} \PYG{n}{instructionLabel}\PYG{p}{:} \PYG{n}{QLabel}\PYG{p}{,} \PYG{n}{actionBtns}\PYG{p}{:} \PYG{n+nb}{list}\PYG{p}{):}
+    \PYG{n}{modes} \PYG{o}{=} \PYG{p}{\PYGZob{}}
+        \PYG{l+s+s1}{\PYGZsq{}input\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}Ввод данных\PYGZsq{}}\PYG{p}{,}
+        \PYG{l+s+s1}{\PYGZsq{}reset\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}Ввести новые данные\PYGZsq{}}
+    \PYG{p}{\PYGZcb{}}
+    \PYG{n}{instructionTexts} \PYG{o}{=} \PYG{p}{\PYGZob{}}
+        \PYG{l+s+s1}{\PYGZsq{}input\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}Введите данные\PYGZsq{}}\PYG{p}{,}
+        \PYG{l+s+s1}{\PYGZsq{}reset\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}Выберите действие\PYGZsq{}}
+    \PYG{p}{\PYGZcb{}}
+
+    \PYG{k}{if} \PYG{n}{dataGetter}\PYG{o}{.}\PYG{n}{inputBtnMode} \PYG{o}{==} \PYG{l+s+s1}{\PYGZsq{}input\PYGZsq{}}\PYG{p}{:}
+        \PYG{n}{gotError}\PYG{p}{:} \PYG{n+nb}{bool} \PYG{o}{=} \PYG{n}{dataGetter}\PYG{o}{.}\PYG{n}{catch\PYGZus{}input\PYGZus{}errors}\PYG{p}{()}
+        \PYG{k}{if} \PYG{o+ow}{not} \PYG{n}{gotError}\PYG{p}{:}
+            \PYG{p}{[} \PYG{n}{tableHandler}\PYG{o}{.}\PYG{n}{table}\PYG{o}{.}\PYG{n}{setEnabled}\PYG{p}{(}\PYG{k+kc}{False}\PYG{p}{)} \PYG{k}{for} \PYG{n}{tableHandler} \PYG{o+ow}{in} \PYG{n}{dataGetter}\PYG{o}{.}\PYG{n}{tables}\PYG{o}{.}\PYG{n}{values}\PYG{p}{()]}
+            \PYG{p}{[} \PYG{n}{lineEdit}\PYG{o}{.}\PYG{n}{setEnabled}\PYG{p}{(}\PYG{k+kc}{False}\PYG{p}{)} \PYG{k}{for} \PYG{n}{lineEdit} \PYG{o+ow}{in} \PYG{n}{dataGetter}\PYG{o}{.}\PYG{n}{lineEdits}\PYG{o}{.}\PYG{n}{values}\PYG{p}{()]}
+            \PYG{p}{[} \PYG{n}{btn}\PYG{o}{.}\PYG{n}{setEnabled}\PYG{p}{(}\PYG{k+kc}{True}\PYG{p}{)} \PYG{k}{for} \PYG{n}{btn} \PYG{o+ow}{in} \PYG{n}{actionBtns}\PYG{p}{]}
+            \PYG{n}{inputBtn}\PYG{o}{.}\PYG{n}{setText}\PYG{p}{(}\PYG{n}{modes}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}reset\PYGZsq{}}\PYG{p}{])}
+            \PYG{n}{dataGetter}\PYG{o}{.}\PYG{n}{inputBtnMode} \PYG{o}{=} \PYG{l+s+s1}{\PYGZsq{}reset\PYGZsq{}}
+            \PYG{n}{instructionLabel}\PYG{o}{.}\PYG{n}{setText}\PYG{p}{(}\PYG{n}{instructionTexts}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}reset\PYGZsq{}}\PYG{p}{])}
+            \PYG{n}{matrixOptimizer}\PYG{o}{.}\PYG{n}{max\PYGZus{}T} \PYG{o}{=} \PYG{n+nb}{float}\PYG{p}{(}\PYG{n}{dataGetter}\PYG{o}{.}\PYG{n}{lineEditsTexts}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}Значение Тз\PYGZsq{}}\PYG{p}{])}
+
+        \PYG{k}{return}
+    
+    \PYG{k}{if} \PYG{n}{dataGetter}\PYG{o}{.}\PYG{n}{inputBtnMode} \PYG{o}{==} \PYG{l+s+s1}{\PYGZsq{}reset\PYGZsq{}}\PYG{p}{:}
+        \PYG{p}{[} \PYG{n}{tableHandler}\PYG{o}{.}\PYG{n}{table}\PYG{o}{.}\PYG{n}{setEnabled}\PYG{p}{(}\PYG{k+kc}{True}\PYG{p}{)} \PYG{k}{for} \PYG{n}{tableHandler} \PYG{o+ow}{in} \PYG{n}{dataGetter}\PYG{o}{.}\PYG{n}{tables}\PYG{o}{.}\PYG{n}{values}\PYG{p}{()]}
+        \PYG{p}{[} \PYG{n}{tableHandler}\PYG{o}{.}\PYG{n}{decolorize\PYGZus{}cells}\PYG{p}{()} \PYG{k}{for} \PYG{n}{tableHandler} \PYG{o+ow}{in} \PYG{n}{dataGetter}\PYG{o}{.}\PYG{n}{tables}\PYG{o}{.}\PYG{n}{values}\PYG{p}{()]}
+        \PYG{p}{[} \PYG{n}{lineEdit}\PYG{o}{.}\PYG{n}{setEnabled}\PYG{p}{(}\PYG{k+kc}{True}\PYG{p}{)} \PYG{k}{for} \PYG{n}{lineEdit} \PYG{o+ow}{in} \PYG{n}{dataGetter}\PYG{o}{.}\PYG{n}{lineEdits}\PYG{o}{.}\PYG{n}{values}\PYG{p}{()]}
+        \PYG{p}{[} \PYG{n}{btn}\PYG{o}{.}\PYG{n}{setEnabled}\PYG{p}{(}\PYG{k+kc}{False}\PYG{p}{)} \PYG{k}{for} \PYG{n}{btn} \PYG{o+ow}{in} \PYG{n}{actionBtns}\PYG{p}{]}
+        \PYG{n}{inputBtn}\PYG{o}{.}\PYG{n}{setText}\PYG{p}{(}\PYG{n}{modes}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}input\PYGZsq{}}\PYG{p}{])}
+        \PYG{n}{dataGetter}\PYG{o}{.}\PYG{n}{inputBtnMode} \PYG{o}{=} \PYG{l+s+s1}{\PYGZsq{}input\PYGZsq{}}
+        \PYG{n}{instructionLabel}\PYG{o}{.}\PYG{n}{setText}\PYG{p}{(}\PYG{n}{instructionTexts}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}input\PYGZsq{}}\PYG{p}{])}
+        \PYG{k}{return}        
+
+
+\PYG{k}{def} \PYG{n+nf}{main}\PYG{p}{():}
+    \PYG{n}{Form}\PYG{p}{,} \PYG{n}{Window} \PYG{o}{=} \PYG{n}{uic}\PYG{o}{.}\PYG{n}{loadUiType}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}main\PYGZus{}window.ui\PYGZdq{}}\PYG{p}{)}
+    \PYG{n}{app} \PYG{o}{=} \PYG{n}{QApplication}\PYG{p}{([])}
+    \PYG{n}{window} \PYG{o}{=} \PYG{n}{Window}\PYG{p}{()}
+    \PYG{n}{form} \PYG{o}{=} \PYG{n}{Form}\PYG{p}{()}
+    \PYG{n}{form}\PYG{o}{.}\PYG{n}{setupUi}\PYG{p}{(}\PYG{n}{window}\PYG{p}{)}
+    
+    \PYG{k+kn}{from} \PYG{n+nn}{tableHandlers} \PYG{k+kn}{import} \PYG{n}{TableHandler}
+    \PYG{n}{cTable} \PYG{o}{=} \PYG{n}{TableHandler}\PYG{p}{(}\PYG{n}{form}\PYG{o}{.}\PYG{n}{cMatrix}\PYG{p}{,} \PYG{n}{cMatrixDefault}\PYG{p}{)}
+    \PYG{n}{tTable} \PYG{o}{=} \PYG{n}{TableHandler}\PYG{p}{(}\PYG{n}{form}\PYG{o}{.}\PYG{n}{tMatrix}\PYG{p}{,} \PYG{n}{tMatrixDefault}\PYG{p}{)}
+    \PYG{n}{cTable}\PYG{o}{.}\PYG{n}{table}\PYG{o}{.}\PYG{n}{itemChanged}\PYG{o}{.}\PYG{n}{connect}\PYG{p}{(}\PYG{n}{TableHandler}\PYG{o}{.}\PYG{n}{floatValidateAndMessage}\PYG{p}{)}
+    \PYG{n}{tTable}\PYG{o}{.}\PYG{n}{table}\PYG{o}{.}\PYG{n}{itemChanged}\PYG{o}{.}\PYG{n}{connect}\PYG{p}{(}\PYG{n}{TableHandler}\PYG{o}{.}\PYG{n}{floatValidateAndMessage}\PYG{p}{)}
+
+    \PYG{k+kn}{from} \PYG{n+nn}{optimizer} \PYG{k+kn}{import} \PYG{n}{MatrixOptimizer}
+    \PYG{n}{matrixOptimizer} \PYG{o}{=} \PYG{n}{MatrixOptimizer}\PYG{p}{(}\PYG{n}{cTable}\PYG{p}{,} \PYG{n}{tTable}\PYG{p}{,} \PYG{n}{max\PYGZus{}T\PYGZus{}default}\PYG{p}{)}
+    \PYG{n}{dataGetter} \PYG{o}{=} \PYG{n}{DataGetter}\PYG{p}{(}\PYG{n}{tables}\PYG{o}{=}\PYG{p}{\PYGZob{}}\PYG{l+s+s2}{\PYGZdq{}Матрица C\PYGZdq{}}\PYG{p}{:} \PYG{n}{cTable}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}Матрица T\PYGZdq{}}\PYG{p}{:} \PYG{n}{tTable}\PYG{p}{\PYGZcb{},} \PYG{n}{lineEdits}\PYG{o}{=}\PYG{p}{\PYGZob{}}\PYG{l+s+s2}{\PYGZdq{}Значение Тз\PYGZdq{}}\PYG{p}{:} \PYG{n}{form}\PYG{o}{.}\PYG{n}{T\PYGZus{}max\PYGZus{}lEdit}\PYG{p}{\PYGZcb{},} 
+                            \PYG{n}{lineEditsLinkedTables}\PYG{o}{=}\PYG{p}{\PYGZob{}}\PYG{l+s+s2}{\PYGZdq{}Значение Тз\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}Матрица T\PYGZsq{}}\PYG{p}{\PYGZcb{})}
+
+    \PYG{n}{form}\PYG{o}{.}\PYG{n}{dataInput}\PYG{o}{.}\PYG{n}{clicked}\PYG{o}{.}\PYG{n}{connect}\PYG{p}{(}\PYG{k}{lambda}\PYG{p}{:} \PYG{p}{(}
+        \PYG{n}{InputBtnClick}\PYG{p}{(}\PYG{n}{dataGetter}\PYG{p}{,} \PYG{n}{matrixOptimizer}\PYG{p}{,} \PYG{n}{form}\PYG{o}{.}\PYG{n}{dataInput}\PYG{p}{,} \PYG{n}{form}\PYG{o}{.}\PYG{n}{instructionLabel}\PYG{p}{,} \PYG{p}{[}\PYG{n}{form}\PYG{o}{.}\PYG{n}{optimize1}\PYG{p}{,} \PYG{n}{form}\PYG{o}{.}\PYG{n}{optimize2}\PYG{p}{,} \PYG{n}{form}\PYG{o}{.}\PYG{n}{decisionTreeBtn}\PYG{p}{]),}
+        \PYG{n}{matrixOptimizer}\PYG{o}{.}\PYG{n}{refreshValues}\PYG{p}{()}
+    \PYG{p}{))}
+    \PYG{n}{form}\PYG{o}{.}\PYG{n}{optimize1}\PYG{o}{.}\PYG{n}{clicked}\PYG{o}{.}\PYG{n}{connect}\PYG{p}{(}\PYG{k}{lambda}\PYG{p}{:} \PYG{p}{(}
+        \PYG{n}{matrixOptimizer}\PYG{o}{.}\PYG{n}{optimization1}\PYG{p}{(),}
+        \PYG{n}{matrixOptimizer}\PYG{o}{.}\PYG{n}{cTable}\PYG{o}{.}\PYG{n}{colorize\PYGZus{}cells}\PYG{p}{(}\PYG{n}{matrixOptimizer}\PYG{o}{.}\PYG{n}{eliminated}\PYG{p}{),}
+        \PYG{n}{matrixOptimizer}\PYG{o}{.}\PYG{n}{tTable}\PYG{o}{.}\PYG{n}{colorize\PYGZus{}cells}\PYG{p}{(}\PYG{n}{matrixOptimizer}\PYG{o}{.}\PYG{n}{eliminated}\PYG{p}{)}
+    \PYG{p}{))}
+    \PYG{n}{form}\PYG{o}{.}\PYG{n}{optimize2}\PYG{o}{.}\PYG{n}{clicked}\PYG{o}{.}\PYG{n}{connect}\PYG{p}{(}\PYG{k}{lambda}\PYG{p}{:} \PYG{p}{(}
+        \PYG{n}{matrixOptimizer}\PYG{o}{.}\PYG{n}{optimization2}\PYG{p}{(),}
+        \PYG{n}{matrixOptimizer}\PYG{o}{.}\PYG{n}{cTable}\PYG{o}{.}\PYG{n}{colorize\PYGZus{}cells}\PYG{p}{(}\PYG{n}{matrixOptimizer}\PYG{o}{.}\PYG{n}{eliminated}\PYG{p}{),}
+        \PYG{n}{matrixOptimizer}\PYG{o}{.}\PYG{n}{tTable}\PYG{o}{.}\PYG{n}{colorize\PYGZus{}cells}\PYG{p}{(}\PYG{n}{matrixOptimizer}\PYG{o}{.}\PYG{n}{eliminated}\PYG{p}{)}
+    \PYG{p}{))}
+    \PYG{n}{form}\PYG{o}{.}\PYG{n}{decisionTreeBtn}\PYG{o}{.}\PYG{n}{clicked}\PYG{o}{.}\PYG{n}{connect}\PYG{p}{(}\PYG{k}{lambda}\PYG{p}{:} \PYG{p}{(}
+        \PYG{n}{matrixOptimizer}\PYG{o}{.}\PYG{n}{tree\PYGZus{}optimization}\PYG{p}{(),}
+        \PYG{n}{form}\PYG{o}{.}\PYG{n}{svgView}\PYG{o}{.}\PYG{n}{update}\PYG{p}{()}
+    \PYG{p}{))}
+
+    \PYG{n}{validator} \PYG{o}{=} \PYG{n}{QRegularExpressionValidator}\PYG{p}{(}\PYG{n}{QRegularExpression}\PYG{p}{(}\PYG{l+s+sa}{r}\PYG{l+s+s1}{\PYGZsq{}[0\PYGZhy{}9]+\PYGZbs{}.[0\PYGZhy{}9]*\PYGZsq{}}\PYG{p}{))}
+    \PYG{n}{form}\PYG{o}{.}\PYG{n}{T\PYGZus{}max\PYGZus{}lEdit}\PYG{o}{.}\PYG{n}{setValidator}\PYG{p}{(}\PYG{n}{validator}\PYG{p}{)}
+    \PYG{n}{form}\PYG{o}{.}\PYG{n}{T\PYGZus{}max\PYGZus{}lEdit}\PYG{o}{.}\PYG{n}{setText}\PYG{p}{(}\PYG{n+nb}{str}\PYG{p}{(}\PYG{n}{max\PYGZus{}T\PYGZus{}default}\PYG{p}{))}
+    
+    \PYG{k}{def} \PYG{n+nf}{showSVG}\PYG{p}{(}\PYG{n}{event}\PYG{p}{):}
+        \PYG{k}{if} \PYG{n}{matrixOptimizer}\PYG{o}{.}\PYG{n}{treeDone}\PYG{p}{:}
+            \PYG{n}{svgRenderer} \PYG{o}{=} \PYG{n}{QSvgRenderer}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}out.svg\PYGZsq{}}\PYG{p}{)}
+            \PYG{n}{painter} \PYG{o}{=} \PYG{n}{QPainter}\PYG{p}{(}\PYG{n}{form}\PYG{o}{.}\PYG{n}{svgView}\PYG{p}{)}
+            \PYG{n}{svgRenderer}\PYG{o}{.}\PYG{n}{render}\PYG{p}{(}\PYG{n}{painter}\PYG{p}{)}
+    \PYG{n}{form}\PYG{o}{.}\PYG{n}{svgView}\PYG{o}{.}\PYG{n}{paintEvent} \PYG{o}{=} \PYG{n}{showSVG}
+    \PYG{n}{window}\PYG{o}{.}\PYG{n}{show}\PYG{p}{()}
+    \PYG{n}{app}\PYG{o}{.}\PYG{n}{exec}\PYG{p}{()}
+
+\PYG{k}{if} \PYG{n+nv+vm}{\PYGZus{}\PYGZus{}name\PYGZus{}\PYGZus{}} \PYG{o}{==} \PYG{l+s+s1}{\PYGZsq{}\PYGZus{}\PYGZus{}main\PYGZus{}\PYGZus{}\PYGZsq{}}\PYG{p}{:}
+    \PYG{n}{main}\PYG{p}{()}
+\end{Verbatim}
