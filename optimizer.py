@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QTableWidget
+from PyQt6.QtWidgets import QMessageBox
 from tableHandlers import TableHandler
 import numpy as np
 
@@ -75,8 +75,8 @@ class Tree:
         
 
     def toSvg(self, file_name: str ='out.svg'):
-        self.image_width = 800*1.12
-        self.image_height = 250*1.12
+        self.image_width = 800*1.13
+        self.image_height = 250*1.13
         self.node_width = 50
         self.node_height = 30
         self.f_size = '12px'
@@ -205,4 +205,6 @@ class MatrixOptimizer:
         self.root.print_tree()
         self.treeDone = True
         self.root.toSvg()
-        
+        msg = QMessageBox()
+        msg.setText('Дерево успешно построено')
+        msg.exec()

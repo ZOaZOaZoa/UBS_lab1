@@ -22,7 +22,7 @@ tMatrixDefault = np.array([
 ], dtype=np.float16)
 max_T_default = 25
 
-def InputBtnClick(dataGetter: DataGetter, matrixOptimizer, inputBtn: QPushButton, instructionLabel: QLabel):
+def InputBtnClick(dataGetter: DataGetter, matrixOptimizer, inputBtn: QPushButton, instructionLabel: QLabel, actionBtns: list):
     modes = {
         'input': 'Ввод данных',
         'reset': 'Ввести новые данные'
@@ -37,16 +37,19 @@ def InputBtnClick(dataGetter: DataGetter, matrixOptimizer, inputBtn: QPushButton
         if not gotError:
             [ tableHandler.table.setEnabled(False) for tableHandler in dataGetter.tables.values()]
             [ lineEdit.setEnabled(False) for lineEdit in dataGetter.lineEdits.values()]
+            [ btn.setEnabled(True) for btn in actionBtns]
             inputBtn.setText(modes['reset'])
             dataGetter.inputBtnMode = 'reset'
             instructionLabel.setText(instructionTexts['reset'])
             matrixOptimizer.max_T = float(dataGetter.lineEditsTexts['Значение Тз'])
+
         return
     
     if dataGetter.inputBtnMode == 'reset':
         [ tableHandler.table.setEnabled(True) for tableHandler in dataGetter.tables.values()]
         [ tableHandler.decolorize_cells() for tableHandler in dataGetter.tables.values()]
         [ lineEdit.setEnabled(True) for lineEdit in dataGetter.lineEdits.values()]
+        [ btn.setEnabled(False) for btn in actionBtns]
         inputBtn.setText(modes['input'])
         dataGetter.inputBtnMode = 'input'
         instructionLabel.setText(instructionTexts['input'])
@@ -72,7 +75,7 @@ def main():
                             lineEditsLinkedTables={"Значение Тз": 'Матрица T'})
 
     form.dataInput.clicked.connect(lambda: (
-        InputBtnClick(dataGetter, matrixOptimizer, form.dataInput, form.instructionLabel),
+        InputBtnClick(dataGetter, matrixOptimizer, form.dataInput, form.instructionLabel, [form.optimize1, form.optimize2, form.decisionTreeBtn]),
         matrixOptimizer.refreshValues()
     ))
     form.optimize1.clicked.connect(lambda: (

@@ -1,4 +1,4 @@
-This is LuaHBTeX, Version 1.15.0 (MiKTeX 22.3) (format=lualatex 2023.10.21)  6 OCT 2024 15:11
+This is LuaHBTeX, Version 1.15.0 (MiKTeX 22.3) (format=lualatex 2023.10.21)  6 OCT 2024 17:52
  restricted system commands enabled.
 **UBS1.tex
 (./UBS1.tex
@@ -1252,7 +1252,7 @@ Package caption Info: End \AtBeginDocument code.
 
 \openout2 = title.aux
  (./title.tex
-<png/tit.png, id=26, 1406.25375pt x 313.9228pt>
+<png/tit.png, id=30, 1406.25375pt x 313.9228pt>
 File: png/tit.png Graphic file (type png)
 <use png/tit.png>
 Package luatex.def Info: png/tit.png  used on input line 4.
@@ -1329,10 +1329,10 @@ Overfull \hbox (0.7149pt too wide) in paragraph at lines 163--165
 
 
 Package caption Warning: The option `hypcap=true' will be ignored for this
-(caption)                particular \caption on input line 207.
+(caption)                particular \caption on input line 206.
 See the caption package documentation for explanation.
 
-[6] (./UBS1.aux (./title.aux))
+[6] [7] (./UBS1.aux (./title.aux))
  ***********
 LaTeX2e <2023-06-01> patch level 1
 L3 programming layer <2023-10-10>
@@ -1342,18 +1342,18 @@ L3 programming layer <2023-10-10>
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
 Package rerunfilecheck Info: File `UBS1.out' has not changed.
-(rerunfilecheck)             Checksum: 683CB7A353DE87EA149C6859912C2F7D;1105.
+(rerunfilecheck)             Checksum: 719C59D454823AF554214651C271ED89;1308.
 )
 
 Here is how much of LuaTeX's memory you used:
- 32615 strings out of 476838
+ 32619 strings out of 476838
  125027,1977958 words of node,token memory allocated
  662 words of node memory still in use:
    7 hlist, 2 vlist, 2 rule, 2 glue, 4 kern, 1 glyph, 49 attribute, 60 glue_spec
 , 26 attribute_list, 2 write nodes
-   avail lists: 2:2725,3:1076,4:45,5:589,6:36,7:4322,8:49,9:698,10:7,11:454
- 53443 multiletter control sequences out of 65536+600000
- 94 fonts using 19262799 bytes
+   avail lists: 2:2794,3:1090,4:48,5:589,6:36,7:4322,8:49,9:706,10:7,11:454
+ 53445 multiletter control sequences out of 65536+600000
+ 95 fonts using 19837207 bytes
  89i,16n,118p,528b,1772s stack positions out of 10000i,1000n,20000p,200000b,200000s
 {E:/programs/MikTex/fonts/enc/dvips/lm/lm-rm.enc}<C:/WINDOWS/Fonts/timesi.ttf><C
 :/WINDOWS/Fonts/timesbd.ttf><C:/WINDOWS/Fonts/times.ttf><E:/programs/MikTex/font
@@ -1363,9 +1363,9 @@ ex/fonts/type1/public/lm/lmr12.pfb><E:/programs/MikTex/fonts/type1/public/newtx/
 txexs.pfb><E:/programs/MikTex/fonts/type1/public/newtx/txmiaX.pfb><E:/programs/M
 ikTex/fonts/type1/public/newtx/txsym.pfb><E:/programs/MikTex/fonts/type1/public/
 newtx/txsys.pfb>
-Output written on UBS1.pdf (6 pages, 322566 bytes).
+Output written on UBS1.pdf (7 pages, 330092 bytes).
 
-PDF statistics: 135 PDF objects out of 1000 (max. 8388607)
- 22 named destinations out of 1000 (max. 131072)
- 56 words of extra memory for PDF output out of 10000 (max. 100000000)
+PDF statistics: 144 PDF objects out of 1000 (max. 8388607)
+ 24 named destinations out of 1000 (max. 131072)
+ 64 words of extra memory for PDF output out of 10000 (max. 100000000)
 

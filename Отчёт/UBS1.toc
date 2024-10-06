@@ -4,3 +4,4 @@
 \contentsline {subsection}{\numberline {2.1}Первая оптимизация}{4}{subsection.2.1}%
 \contentsline {subsection}{\numberline {2.2}Вторая оптимизация}{4}{subsection.2.2}%
 \contentsline {subsection}{\numberline {2.3}Оптимизация методом ветвления}{5}{subsection.2.3}%
+\contentsline {section}{\numberline {3}Реализация программы}{7}{section.3}%
