@@ -109,7 +109,7 @@ class Tree:
         
         
         svg += '</svg>'
-        with open(file_name, 'w') as fp:
+        with open(file_name, 'w', encoding='utf-8') as fp:
             fp.write(svg)
 
         

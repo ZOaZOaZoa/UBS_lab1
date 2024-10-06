@@ -110,7 +110,7 @@
         
         
         \PYG{n}{svg} \PYG{o}{+=} \PYG{l+s+s1}{\PYGZsq{}\PYGZlt{}/svg\PYGZgt{}\PYGZsq{}}
-        \PYG{k}{with} \PYG{n+nb}{open}\PYG{p}{(}\PYG{n}{file\PYGZus{}name}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}w\PYGZsq{}}\PYG{p}{)} \PYG{k}{as} \PYG{n}{fp}\PYG{p}{:}
+        \PYG{k}{with} \PYG{n+nb}{open}\PYG{p}{(}\PYG{n}{file\PYGZus{}name}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}w\PYGZsq{}}\PYG{p}{,} \PYG{n}{encoding}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}utf\PYGZhy{}8\PYGZsq{}}\PYG{p}{)} \PYG{k}{as} \PYG{n}{fp}\PYG{p}{:}
             \PYG{n}{fp}\PYG{o}{.}\PYG{n}{write}\PYG{p}{(}\PYG{n}{svg}\PYG{p}{)}
 
         
