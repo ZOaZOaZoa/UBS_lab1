@@ -1,0 +1,213 @@
+\input{preamble.tex}
+
+\begin{document}
+	
+	\include{title.tex}
+	\pagenumbering{arabic}
+	\setcounter{page}{2}
+	\tableofcontents
+	\newpage
+	
+
+	\section{Постановка задачи}
+	
+	Имеется $I$ задач, которые должны быть решены последовательно друг за другом. Для их решения имеется $J$ узлов. Затраты и время решения  $i$-ой задачи на $j$-ом узле заданы соответственно матрицами стоимости затрат $C = [c_{ij}]$ и временных затрат $T = [t_{ij}]$.
+	
+	\begin{equation}
+		C = \begin{bmatrix*}
+			4,5 & 7  & 2 & 2 \\
+			5   & 8  & 1 & 3 \\
+			5,5 & 9  & 6 & 2 \\
+			6   & 10 & 7 & 1 \\
+			6,5 & 7  & 3 & 1
+		\end{bmatrix*},\;
+		T = \begin{bmatrix*}
+			4,5 & 3 & 2 & 9  \\
+			5   & 6 & 5 & 10 \\
+			5,5 & 7 & 6 & 11 \\
+			6   & 8 & 7 & 12 \\
+			6,5 & 9 & 8 & 5
+		\end{bmatrix*}
+		\label{matrices}
+	\end{equation}
+	
+	Требуется минимизировать суммарную стоимость затрат при заданном ограничении на суммарные временные затраты $T_{\text{з}} = 25$. Для записи оптимизационной задачи используем $x_{ij}$:
+	\[x_{ij} = \begin{cases}
+		1, & i\text{-ая задача решается на }j\text{-ом узле} \\
+		0, & \text{иначе}
+	\end{cases}.\]
+
+	Тогда задача оптимизации примет вид:
+	\begin{equation}
+		\left\{\begin{aligned}
+			&\sum_{i=1}^{I} \sum_{j=1}^{J} c_{ij} x_{ij} \to \min \\
+			&\sum_{i=1}^{I} \sum_{j=1}^{J} t_{ij} x_{ij} \leq T_{\text{з}} \\
+			&\sum_{j=1}^{J} x_{ij} = 1, \forall i: i=\overline{1,I}
+		\end{aligned}\right.	
+		\label{task}
+	\end{equation}
+
+	Для проведения оптимизации будет написана программа с пользовательским интерфейсом для ввода исходных данных. 
+	\newpage
+	
+	\section{Алгоритмы решения задачи}
+	
+	Решать задачу мы будем в несколько этапов. Сначала над матрицами затрат будут проведены две процедуры оптимизации, которые исключат заведомо неоптимальные узлы для использования.
+	
+	\subsection{Первая оптимизация}
+	
+	Оптимизация проводится построчно, пусть алгоритм находится на $i$-ой строке. Фиксируется номер узла $s$, на котором стоимость затрат наименьшая: 
+	\begin{equation*}
+		s = \mathrm{arg} \min_{j} c_{ij}
+	\end{equation*}
+	
+	Затем, исключаются те элементы строки, которые удовлетворяют условию (\ref{1optimization}). При чём ровно одно из этих неравенств может выполняться нестрого. 
+	\begin{equation}
+		\begin{aligned}
+			& c_{ij} > c_{is} \\
+			& t_{ij} > t_{is}
+		\end{aligned}
+		\label{1optimization}
+	\end{equation}
+	
+	Так мы исключаем узлы, которые не лучше зафиксированного $s$-ого узла ни по стоимости, ни по времени затрат. В результате такой процедуры данные матрицы (\ref{matrices}) преобразуются к следующему виду:
+	
+	\begin{equation}
+		C^{(0)} = \begin{bmatrix*}
+			-   & -  & 2 & - \\
+			-   & -  & 1 & - \\
+			5,5 & 9  & 6 & 2 \\
+			6   & 10 & 7 & 1 \\
+			-   & -  & - & 1
+		\end{bmatrix*},\;
+		T^{(0)} = \begin{bmatrix*}
+			-   & - & 2 & -  \\
+			-   & - & 5 & - \\
+			5,5 & 7 & 6 & 11 \\
+			6   & 8 & 7 & 12 \\
+			-   & - & - & 5
+		\end{bmatrix*}
+		\label{matrices0}
+	\end{equation}
+	
+	\subsection{Вторая оптимизация}
+	
+	Вторая оптимизация так же как и первая проводится построчно. Будем рассматривать её для фиксированной $i$-ой строки. Эта оптимизация исключает те узлы, использование которых напрямую приводит к нарушению временного ограничения $T_{\text{з}}$.
+	
+	Для этого используется вектор наименьших временных затрат на узлах системы:
+	\begin{equation*}
+		T_{\min} = \left(\min_{j} t_{1j}\;\min_{j} t_{2j}\;\dots\;\min_{j} t_{Ij}\right)^{\intercal}
+	\end{equation*}
+
+	То есть теоретически наименьшее время решения всех $I$ задач будет равно:
+	\begin{equation*}
+		T_{\text{теор.мин}} = {\norm{T_{\min}}}_{1} = \sum_{i=1}^I T_{\min\,i}
+	\end{equation*}
+	
+	Тогда для данной $i$-ой строки $j$-ый элемент исключается если выполняется условие (\ref{2optimization}). Это означает, что при решении $i$-ой задачи на $j$-ом узле, в любом случае будет нарушено временное ограничение $T_{\text{з}}$.
+	\begin{equation}
+		T_{\text{теор.мин}} - T_{\min\,i} + t_{ij} > T_{\text{з}}
+		\label{2optimization}
+	\end{equation} 
+
+	В результате такой оптимизации матрицы (\ref{matrices0}) приобретают следующий вид:
+
+	\begin{equation}
+		C^{(1)} = \begin{bmatrix*}
+			-   & -  & 2 & - \\
+			-   & -  & 1 & - \\
+			5,5 & 9  & 6 & - \\
+			6   & -  & 7 & - \\
+			-   & -  & - & 1
+		\end{bmatrix*},\;
+		T^{(1)} = \begin{bmatrix*}
+			-   & - & 2 & -  \\
+			-   & - & 5 & -  \\
+			5,5 & 7 & 6 & -  \\
+			6   & - & 7 & -  \\
+			-   & - & - & 5
+		\end{bmatrix*}
+		\label{matrices1}
+	\end{equation}
+
+	В результате в каждой $i$-ой строке остаётся некоторое допустимое множество узлов для использования $J_{\text{доп}\,i}\subseteq J$.
+
+	\subsection{Оптимизация методом ветвления}
+	
+	В самом начале фиксируются два различных решения задачи, доставляющие минимумы суммарным стоимостям затрат $C_{\min}$ и временным затратам $T_{\min}$.
+	\begin{align*}
+		&C_{\min} = \left(\min_{j} c_{1j}\;\min_{j} c_{2j}\;\dots\;\min_{j} c_{Ij}\right)^{\intercal} \\		
+		&T_{\min} = \left(\min_{j} t_{1j}\;\min_{j} t_{2j}\;\dots\;\min_{j} t_{Ij}\right)^{\intercal}
+	\end{align*}
+	
+	Для них рассчитываем теоретические минимумы. Этими двумя метриками и будем определять показатели каждой вершины дерева в методе ветвления.
+	\begin{equation*}
+		C_{\text{теор мин}} ={\norm{C_{\min}}}_{1}=15,5,\;
+		T_\text{теор мин} = {\norm{T_{\min}}}_{1}=23,5.
+	\end{equation*}
+	Соотнесём им корень дерева $v^{0}$. Пусть корень дерева будет на нулевом уровне $l=0$. Тогда ему будут смежны вершины $v^{1}_{j},\,j\in J_{\text{доп}\,i}$, которые будут на первом уровне $l=1$.
+	
+	И введём вектор номеров узлов соответствующих вершинам, которые составляют путь до вершины $v^{l}_{j_{l}}$:
+	\begin{equation*}
+		J(v^{l}_{j_{l}}) = \left( j_1\;j_2\;\dots\;j_l \right)^{\intercal},\; l\leq J
+	\end{equation*}
+	
+	Тогда на каждой строке матрицы $i$ или уровне дерева $l$ ($i=l$) будем проводить описанную далее процедуру.
+	
+	\begin{enumerate}
+		\item Рассчитываем для вершин $v^{l}_j$, $j\in J_\text{доп l}$ метрики $\norm{C_{\text{метр j}}}_{1},\;\norm{T_{\text{метр}\,j}}_{1}$. Здесь $C_{\text{метр j}}$ вектор, где первые $l$ элементов берутся $J(v^{l}_j)$, все последующие элементы берутся $C_{\min}$. Метрика временных затрат $T_{\text{метр}\,j}$ определяется аналогично.
+		\item Сравниваем эти вершины по их метрикам. Исключаем из рассмотрения те вершины, для которых метрика временных затрат $T_{\text{метр}\,j}>T_\text{з}$. Из оставшихся вершин выбираем вершину с наименьшей метрикой затрат стоимости $C_{\text{метр j}}$.
+		\item Вершины следующего уровня  $v^{l+1}_j,\,j\in J_\text{доп l}$ делаем смежными выбранной вершине $v^{l}_j$.
+	\end{enumerate}
+	
+	В результате полученное дерево будет иметь вид представленный на рис.~\ref{tree}. В результате данного алгоритма на каждом уровне выбирается единственная вершина.
+	\def\ldistance{2.7em}
+	\begin{center}
+		\begin{tikzpicture}
+			\begin{scope}[sibling distance=5em, level distance=3.5em,
+			every node/.style = {draw, circle},
+			eliminated/.style = {fill = gray},
+			edge from parent/.style={-latex, thick, draw}] 
+			\node(0) {$v^0$}
+			child { node(1) {$v^1_3$}
+				child { node(2) {$v^2_3$} 
+					child { node(3) {$v^3_1$} 
+						child { node(4) {$v^4_1$} 
+							child { node(5) {$v^5_4$} }}
+						child { node[eliminated] {$v^4_2$} }}
+					child { node[eliminated] {$v^3_2$} }
+					child { node[eliminated] {$v^3_3$} }}};
+			\end{scope}
+			\node(l5) [left=2cm] at (5) {5-ый уровень};
+			\node(l4) [above=\ldistance] at (l5) {4-ый уровень};
+			\node(l3) [above=\ldistance] at (l4) {3-ый уровень};
+			\node(l2) [above=\ldistance] at (l3) {2-ый уровень};
+			\node(l1) [above=\ldistance] at (l2) {1-ый уровень};
+			\draw [dashed, thick] (l1) -- (1);
+			\draw [dashed, thick] (l2) -- (2);
+			\draw [dashed, thick] (l3) -- (3);
+			\draw [dashed, thick] (l4) -- (4);
+			\draw [dashed, thick] (l5) -- (5);
+
+			\node (0C)[draw, rectangle, rounded corners, above left=1.5em] at (0) 
+			{$C_{\text{теор мин}}$}; 
+			\draw[->, thick] (0C) -- (0);
+			\node (0T)[draw, rectangle, rounded corners, above right=1.5em] at (0) {$T_{\text{теор мин}}$};
+			\draw[->, thick] (0T) -- (0);
+			
+			\node (1C)[draw, rectangle, rounded corners, above right=1.5em] at (1) 
+			{$\norm{C_{\text{метр 3}}}_{1}$}; 
+			\draw[->, thick] (1C) -- (1);
+			\node (1T)[draw, rectangle, rounded corners, below right=1.5em] at (1) {$\norm{T_{\text{метр 3}}}_{1}$};
+			\draw[->, thick] (1T) -- (1);
+			
+			\node (label) [right = 7em] at (4) {Исключённые вершины};
+		\end{tikzpicture}
+		\captionof{figure}{Пример дерева ветвления}
+		\label{tree}
+	\end{center}
+
+	
+	
+	
+\end{document}

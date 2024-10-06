@@ -1,0 +1,35 @@
+<?xml version = '1.0' encoding='UTF-8'?>
+<svg width='896.0000000000001' height='280.0' viewbox='0 0 896.0000000000001 280.0' xmlns='http://www.w3.org/2000/svg'>
+<text x='0' y='15.0' font-size='12px'>0 уровень</text>
+        <rect x='423.00000000000006' y='0' width='50' height = '30' stroke='black' fill='white'/>
+<text x='448.00000000000006' y='18.0' dominant-baseline='middle' text-anchor='middle' font-size='12px'>7.0|23.5</text>
+<text x='0' y='65.0' font-size='12px'>1 уровень</text>
+<rect x='463.00000000000006' y='50' width='50' height = '30' stroke='black' fill='white'/>
+<text x='488.00000000000006' y='68.0' dominant-baseline='middle' text-anchor='middle' font-size='12px'>7.0|23.5</text>
+<line x1='448.00000000000006' y1='30' x2='488.00000000000006' y2='50' stroke='black'/>
+<text x='0' y='115.0' font-size='12px'>2 уровень</text>
+<rect x='463.00000000000006' y='100' width='50' height = '30' stroke='black' fill='white'/>
+<text x='488.00000000000006' y='118.0' dominant-baseline='middle' text-anchor='middle' font-size='12px'>7.0|23.5</text>
+<line x1='488.00000000000006' y1='80' x2='488.00000000000006' y2='100' stroke='black'/>
+<text x='0' y='165.0' font-size='12px'>3 уровень</text>
+<rect x='303.00000000000006' y='150' width='50' height = '30' stroke='black' fill='white'/>
+<text x='328.00000000000006' y='168.0' dominant-baseline='middle' text-anchor='middle' font-size='12px'>10.5|23.5</text>
+<rect x='383.00000000000006' y='150' width='50' height = '30' stroke='black' fill='gray'/>
+<text x='408.00000000000006' y='168.0' dominant-baseline='middle' text-anchor='middle' font-size='12px'>14.0|25.0</text>
+<rect x='463.00000000000006' y='150' width='50' height = '30' stroke='black' fill='gray'/>
+<text x='488.00000000000006' y='168.0' dominant-baseline='middle' text-anchor='middle' font-size='12px'>11.0|24.0</text>
+<line x1='488.00000000000006' y1='130' x2='328.00000000000006' y2='150' stroke='black'/>
+<line x1='488.00000000000006' y1='130' x2='408.00000000000006' y2='150' stroke='black'/>
+<line x1='488.00000000000006' y1='130' x2='488.00000000000006' y2='150' stroke='black'/>
+<text x='0' y='215.0' font-size='12px'>4 уровень</text>
+<rect x='303.00000000000006' y='200' width='50' height = '30' stroke='black' fill='white'/>
+<text x='328.00000000000006' y='218.0' dominant-baseline='middle' text-anchor='middle' font-size='12px'>15.5|23.5</text>
+<rect x='463.00000000000006' y='200' width='50' height = '30' stroke='black' fill='gray'/>
+<text x='488.00000000000006' y='218.0' dominant-baseline='middle' text-anchor='middle' font-size='12px'>16.5|24.5</text>
+<line x1='328.00000000000006' y1='180' x2='328.00000000000006' y2='200' stroke='black'/>
+<line x1='328.00000000000006' y1='180' x2='488.00000000000006' y2='200' stroke='black'/>
+<text x='0' y='265.0' font-size='12px'>5 уровень</text>
+<rect x='543.0' y='250' width='50' height = '30' stroke='black' fill='white'/>
+<text x='568.0' y='268.0' dominant-baseline='middle' text-anchor='middle' font-size='12px'>15.5|23.5</text>
+<line x1='328.00000000000006' y1='230' x2='568.0' y2='250' stroke='black'/>
+</svg>

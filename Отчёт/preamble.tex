@@ -1,0 +1,109 @@
+\documentclass[a4paper, 14pt,russian]{extarticle}
+
+\usepackage[russian]{babel}
+\usepackage[T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+%Соответствующий математический шрифт для Times new roman
+\usepackage{newtxmath}
+\usepackage{fontspec} 
+%Times new roman
+\defaultfontfeatures{Ligatures={TeX},Renderer=Basic} 
+\setmainfont[Ligatures={TeX,Historic}]{Times New Roman}
+
+%Геометрия
+\usepackage{geometry}
+\geometry{top=20mm}
+\geometry{bottom=15mm}
+\geometry{left=20mm}
+\geometry{right=15mm}
+\usepackage{setspace}
+%Нормальные дроби через запятую
+\usepackage{ncccomma}
+
+\newcommand{\changefont}{%
+	\fontsize{12}{11}\selectfont
+}
+
+%Заголовки
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+%\renewcommand{\sectionmark}[1]{\markright{#1}}
+\fancyhead[R]{\changefont \slshape \leftmark}
+\fancyhead[L]{\changefont \slshape \rightmark}
+%\newcommand{\ssubsection}[1]{\subsection*{#1}
+%	\addcontentsline{toc}{subsection}{#1}
+%	\markright{#1}{}}
+\cfoot{\thepage}
+
+%\полуторный интервал
+\setstretch{1.15}
+\setlength{\parindent}{1.25cm}
+
+\usepackage{amsmath, amsfonts, mathtools}
+\usepackage{physics}
+\usepackage{indentfirst}
+\usepackage{xcolor}
+\usepackage{alltt}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{tikz}
+\usetikzlibrary{calc}
+%Настройка ссылок
+\usepackage{hyperref}
+%\usepackage{upgreek}
+%\renewcommand{\beta}{\upbeta}
+\hypersetup{
+	colorlinks,
+	citecolor=black,
+	filecolor=black,
+	linkcolor=black,
+	urlcolor=black
+}
+\usepackage{caption}
+\DeclareCaptionLabelSeparator{dot}{. }
+\captionsetup{justification=centering,labelsep=dot}
+\usepackage{titlesec}
+
+%Формат заголовков
+\titleformat{\section}{\bfseries\filcenter\Large}{\thesection}{1em}{}
+\titleformat{\subsection}{\bfseries\filcenter\large}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}{\bfseries\filcenter\normalsize}{\thesubsubsection}{1em}{}
+
+\usepackage{chngcntr}
+
+%Включить в нумерацию картинок раздел
+\counterwithin{figure}{section}
+
+%Листинги кода и их стили
+\usepackage{listings}
+\lstdefinestyle{c++} {
+	language=C++,
+	breaklines=true,
+	frame=single,
+	numbers=left,
+	basicstyle=\footnotesize\ttfamily,
+	keywordstyle=\bfseries\color{green!40!black},
+	commentstyle=\itshape\color{purple!40!black},
+	identifierstyle=\color{blue},
+	backgroundcolor=\color{gray!10!white},
+}
+
+\lstdefinestyle{python}{
+	language=Python,
+	breaklines=true,
+	frame=single,
+	numbers=left,
+	basicstyle=\footnotesize\ttfamily,
+	keywordstyle=\bfseries\color{green!40!black},
+	frame=lines
+	basicstyle=\footnotesize
+}
+
+\lstdefinestyle{cmd}{
+	breaklines=true,
+	frame=single,
+	basicstyle=\footnotesize\ttfamily,
+	frame=lines
+	basicstyle=\footnotesize
+}

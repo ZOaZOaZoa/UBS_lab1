@@ -1,5 +1,5 @@
 from PyQt6 import uic
-from PyQt6.QtWidgets import QApplication, QPushButton, QLabel
+from PyQt6.QtWidgets import QApplication, QPushButton, QLabel, QScrollArea
 from PyQt6.QtCore import QRegularExpression
 from PyQt6.QtSvg import QSvgRenderer
 from PyQt6.QtGui import QRegularExpressionValidator, QPainter
@@ -78,27 +78,28 @@ def main():
     form.optimize1.clicked.connect(lambda: (
         matrixOptimizer.optimization1(),
         matrixOptimizer.cTable.colorize_cells(matrixOptimizer.eliminated),
-        matrixOptimizer.tTable.colorize_cells(matrixOptimizer.eliminated),
-        print(matrixOptimizer.eliminated)
+        matrixOptimizer.tTable.colorize_cells(matrixOptimizer.eliminated)
     ))
     form.optimize2.clicked.connect(lambda: (
         matrixOptimizer.optimization2(),
         matrixOptimizer.cTable.colorize_cells(matrixOptimizer.eliminated),
-        matrixOptimizer.tTable.colorize_cells(matrixOptimizer.eliminated),
-        print(matrixOptimizer.eliminated)
+        matrixOptimizer.tTable.colorize_cells(matrixOptimizer.eliminated)
     ))
-    form.decisionTreeBtn.clicked.connect(lambda: matrixOptimizer.tree_optimization())
+    form.decisionTreeBtn.clicked.connect(lambda: (
+        matrixOptimizer.tree_optimization(),
+        form.svgView.update()
+    ))
 
     validator = QRegularExpressionValidator(QRegularExpression(r'[0-9]+\.[0-9]*'))
     form.T_max_lEdit.setValidator(validator)
     form.T_max_lEdit.setText(str(max_T_default))
     
     def showSVG(event):
-        svgRenderer = QSvgRenderer('test.svg')
-        painter = QPainter(form.svgView)
-        svgRenderer.render(painter)
+        if matrixOptimizer.treeDone:
+            svgRenderer = QSvgRenderer('out.svg')
+            painter = QPainter(form.svgView)
+            svgRenderer.render(painter)
     form.svgView.paintEvent = showSVG
-    
     window.show()
     app.exec()
 

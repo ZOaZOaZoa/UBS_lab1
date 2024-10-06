@@ -43,6 +43,76 @@ class Tree:
             print('| '*level + f'{node}'+ '-->', end='')
             child.print_node()
             child.print_tree(level+1)
+    
+    def _calc_x_for_node(self, x_place):
+        x_offset = (x_place - 1.5) * self.nodes_x_step
+        x_offset + (self.image_width-self.node_width)/2
+        x = x_offset + (self.image_width-self.node_width)/2
+        return x
+    
+    def _calc_x_for_text(self, x_place):
+        x_offset = (x_place - 1.5) * self.nodes_x_step
+        x = x_offset + self.image_width/2
+        return x
+
+    def nodeSvg(self, node: 'Tree', x_place=1.5, level=0):
+        if node.status_good:
+            color = 'white'
+        else:
+            color = 'gray'
+        y_baseline = level * self.level_step
+        
+        svg = f'''<rect x='{self._calc_x_for_node(x_place)}' y='{y_baseline}' width='{self.node_width}' height = '{self.node_height}' stroke='black' fill='{color}'/>
+<text x='{self._calc_x_for_text(x_place)}' y='{y_baseline + self.node_height/2+3}' dominant-baseline='middle' text-anchor='middle' font-size='{self.f_size}'>{node.c_sum}|{node.t_sum}</text>\n'''
+        return svg
+
+    def nodesLevelSvg(self, children, level):
+        y_baseline = level * self.level_step
+        svg = f"<text x='0' y='{y_baseline + self.node_height/2}' font-size='{self.f_size}'>{level} уровень</text>\n"
+        for j, node in children.items():
+            svg += self.nodeSvg(node, j, level)
+        return svg
+        
+
+    def toSvg(self, file_name: str ='out.svg'):
+        self.image_width = 800*1.12
+        self.image_height = 250*1.12
+        self.node_width = 50
+        self.node_height = 30
+        self.f_size = '12px'
+        self.level_step = 50
+        self.nodes_x_step = self.node_width + 30
+
+        svg = f'''<?xml version = '1.0' encoding='UTF-8'?>
+<svg width='{self.image_width}' height='{self.image_height}' viewbox='0 0 {self.image_width} {self.image_height}' xmlns='http://www.w3.org/2000/svg'>
+<text x='0' y='{self.node_height/2}' font-size='{self.f_size}'>0 уровень</text>
+        '''
+        svg += self.nodeSvg(self)
+        valid_node = self
+        level = 1
+        while valid_node.children:
+            svg += self.nodesLevelSvg(valid_node.children, level)
+            level += 1
+            y_baseline = (level-1) * self.level_step
+            parent_y = y_baseline - self.level_step + self.node_height
+            if valid_node.fixed_nodes:
+                parent_x = self._calc_x_for_text(valid_node.fixed_nodes[-1])
+            else:
+                parent_x = self._calc_x_for_text(1.5)
+
+            for node in valid_node.children.values():
+                child_y = y_baseline
+                child_x = self._calc_x_for_text(node.fixed_nodes[-1])
+                svg += f"<line x1='{parent_x}' y1='{parent_y}' x2='{child_x}' y2='{child_y}' stroke='black'/>\n"
+                if node.status_good:
+                    valid_node = node
+        
+        
+        svg += '</svg>'
+        with open(file_name, 'w') as fp:
+            fp.write(svg)
+
+        
 
 class MatrixOptimizer:
     def __init__(self, cTable: TableHandler, tTable: TableHandler, max_T: float):
@@ -53,6 +123,7 @@ class MatrixOptimizer:
         self.tMatrix: np.array = tTable.matrix
         self.rows, self.columns = self.cMatrix.shape
         self.eliminated = np.zeros((self.rows, self.columns), dtype=bool)
+        self.treeDone = False
 
     def refreshValues(self):
         self.cMatrix = self.cTable.matrix
@@ -130,5 +201,8 @@ class MatrixOptimizer:
                 if node.fixed_nodes[-1] != ind:
                     node.set_status(False)
 
-        print('Дерево рассчитано')
+        
         self.root.print_tree()
+        self.treeDone = True
+        self.root.toSvg()
+        
